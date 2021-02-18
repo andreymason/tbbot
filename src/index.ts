@@ -1,6 +1,6 @@
 const API_KEY = "1645312068:AAFmVESHusc2PpOmxy1xRONnZrK_IiK5o_w"
 const PORT = 4012
-const MONGO = "mongodb://admin:fweifjwoi234sa@127.0.0.1:27017/tbraza"
+const MONGO = "mongodb://admin:fweifjwoi234sa@127.0.0.1:27017/tb"
 
 import TelegramBot = require('node-telegram-bot-api')
 import { createServer } from 'http';
