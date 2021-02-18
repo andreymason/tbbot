@@ -19,7 +19,7 @@ let appsflyerWebdriver: selenium.ThenableWebDriver
 try {
     facebookWebdriver = new selenium.Builder()
         .withCapabilities(selenium.Capabilities.firefox())
-        //.setFirefoxOptions(new firefox.Options().headless())
+        .setFirefoxOptions(new firefox.Options().headless())
         .build()
 
     appsflyerWebdriver = new selenium.Builder()
