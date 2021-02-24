@@ -36,14 +36,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.Router = exports.testApps = exports.EntryType = exports.checkAppsflyerUnits = exports.initFacebook = exports.clearAdAccounts = exports.removeAdAccounts = exports.addAdAccounts = exports.unpairAllAdAccounts = exports.addRequest = void 0;
+exports.Router = exports.startAppsflyerThread = exports.checkAppsflyer = exports.EntryType = exports.checkAppsflyerUnits = exports.initFacebook = exports.clearAdAccounts = exports.removeAdAccounts = exports.addAdAccounts = exports.unpairAllAdAccounts = exports.addRequest = void 0;
 var express = require("express");
 var selenium = require("selenium-webdriver");
+var _1 = require(".");
+var models_1 = require("./models");
 var firefox = require('selenium-webdriver/firefox');
 var router = express.Router();
 exports.Router = router;
 var FACEBOOK_USERNAME = "pazyukrus84@gmail.com";
-var FACEBOOK_PASSWORD = "abakanaNa19";
+var FACEBOOK_PASSWORD = "ABaKaNaNa20";
 var fbIsReady = false;
 var processing = false;
 var queue = [];
@@ -54,14 +56,21 @@ try {
         .withCapabilities(selenium.Capabilities.firefox())
         .setFirefoxOptions(new firefox.Options().headless())
         .build();
-    // appsflyerWebdriver = new selenium.Builder()
-    //     .withCapabilities(selenium.Capabilities.firefox())
-    //     .setFirefoxOptions(new firefox.Options().headless())
-    //     .build()
+    appsflyerWebdriver = new selenium.Builder()
+        .withCapabilities(selenium.Capabilities.firefox())
+        .setFirefoxOptions(new firefox.Options().headless())
+        .build();
+    checkAppsflyer();
 }
 catch (e) {
     console.log(e);
 }
+// App.findOneAndUpdate({ bundle: "boo.bast.jo" }, { appsflyerLogin: "boombastic.joker@yandex.com", appsflyerPassword: "Qwerty1234!" }).exec()
+// App.findOneAndUpdate({ bundle: "pol.wolfsca" }, { appsflyerLogin: "wolvescards-hd@yandex.ru", appsflyerPassword: "Qwerty1234!" }).exec()
+// App.findOneAndUpdate({ bundle: "jok.games.infinity" }, { appsflyerLogin: "jokerinfinity@yandex.ru", appsflyerPassword: "Jokerinfinity123!" }).exec()
+// App.findOneAndUpdate({ bundle: "com.firejo.jok" }, { appsflyerLogin: "JokeInFire@yandex.ru", appsflyerPassword: "Qwerty1234!" }).exec()
+// App.findOneAndUpdate({ bundle: "com.crzbanana.crz" }, { appsflyerLogin: "crzbanana@yandex.ru", appsflyerPassword: "Qwerty1234!" }).exec()
+// App.findOneAndUpdate({ bundle: "com.egyptdynas" }, { appsflyerLogin: "boombasticegypt@yandex.com", appsflyerPassword: "Qwerty1234!" }).exec()
 function addRequest(entry) {
     queue.push(entry);
     console.log("Added entry, " + queue.length + " entries total.");
@@ -290,7 +299,6 @@ function removeAdAccounts(entry, tries) {
                     return [3 /*break*/, 19];
                 case 18:
                     e_7 = _b.sent();
-                    console.log(e_7);
                     if (tries >= 3) {
                         processing = false;
                         entry.callback(null);
@@ -424,40 +432,55 @@ function initFacebook() {
 exports.initFacebook = initFacebook;
 function checkAppsflyerUnits(app) {
     return __awaiter(this, void 0, void 0, function () {
-        var unitsLeft, unitsLeftText;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var unitsLeft, unitsLeftNumber, _a, e_11;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0: return [4 /*yield*/, appsflyerWebdriver.get("https://hq1.appsflyer.com/auth/login")];
                 case 1:
-                    _a.sent();
+                    _b.sent();
                     return [4 /*yield*/, appsflyerWebdriver.findElement(selenium.By.id('user-email')).sendKeys(app.appsflyerLogin)];
                 case 2:
-                    _a.sent();
+                    _b.sent();
                     return [4 /*yield*/, appsflyerWebdriver.findElement(selenium.By.id('password-field')).sendKeys(app.appsflyerPassword)];
                 case 3:
-                    _a.sent();
+                    _b.sent();
                     return [4 /*yield*/, appsflyerWebdriver.findElement(selenium.By.xpath("//button[contains(@class,'btn btn-lg btn-primary submit-btn')]")).click()];
                 case 4:
-                    _a.sent();
+                    _b.sent();
                     return [4 /*yield*/, appsflyerWebdriver.get("https://hq1.appsflyer.com/account/myplan/overview")];
                 case 5:
-                    _a.sent();
+                    _b.sent();
                     return [4 /*yield*/, appsflyerWebdriver.sleep(4000)];
                 case 6:
-                    _a.sent();
+                    _b.sent();
+                    _b.label = 7;
+                case 7:
+                    _b.trys.push([7, 12, , 14]);
                     return [4 /*yield*/, appsflyerWebdriver.wait(function () {
                             return selenium.until.elementLocated(selenium.By.xpath("//span[contains(@class,'af-formatted-number')]"));
                         })];
-                case 7:
-                    _a.sent();
-                    return [4 /*yield*/, appsflyerWebdriver.findElement(selenium.By.xpath("(//span[contains(@class,'af-formatted-number')])[2]"))];
                 case 8:
-                    unitsLeft = _a.sent();
-                    return [4 /*yield*/, unitsLeft.getText()];
+                    _b.sent();
+                    return [4 /*yield*/, appsflyerWebdriver.findElement(selenium.By.xpath("(//span[contains(@class,'af-formatted-number')])[2]"))];
                 case 9:
-                    unitsLeftText = (_a.sent()).replace(',', '').replace('.', '');
-                    console.log(parseInt(unitsLeftText));
-                    return [2 /*return*/];
+                    unitsLeft = _b.sent();
+                    _a = parseInt;
+                    return [4 /*yield*/, unitsLeft.getText()];
+                case 10:
+                    unitsLeftNumber = _a.apply(void 0, [(_b.sent()).replace(',', '').replace('.', '')]);
+                    console.log(app.name + ": " + unitsLeftNumber + " left (" + app.appsflyerLogin + " / " + app.appsflyerPassword + ")}");
+                    return [4 /*yield*/, models_1.App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: unitsLeftNumber }).exec()];
+                case 11:
+                    _b.sent();
+                    return [3 /*break*/, 14];
+                case 12:
+                    e_11 = _b.sent();
+                    console.log(e_11);
+                    return [4 /*yield*/, models_1.App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: 0 }).exec()];
+                case 13:
+                    _b.sent();
+                    return [3 /*break*/, 14];
+                case 14: return [2 /*return*/];
             }
         });
     });
@@ -479,30 +502,96 @@ var EntryType;
     EntryType[EntryType["FACEBOOK_CLEAR"] = 2] = "FACEBOOK_CLEAR";
     EntryType[EntryType["APPSFLYER_CHECK"] = 3] = "APPSFLYER_CHECK";
 })(EntryType = exports.EntryType || (exports.EntryType = {}));
-function testApps() {
+function checkAppsflyer() {
     return __awaiter(this, void 0, void 0, function () {
-        var e_11;
+        var apps, _i, apps_1, app, success, index, e_12;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    // let app = await App.findOne({ facebookId: "143740674106408" })
-                    // if (app) {
-                    return [4 /*yield*/, checkAppsflyerUnits({ appsflyerLogin: "JokeInFire@yandex.ru", appsflyerPassword: "Qwerty1234!" })
-                        // }
-                    ];
+                case 0: return [4 /*yield*/, models_1.App.find()];
                 case 1:
-                    // let app = await App.findOne({ facebookId: "143740674106408" })
-                    // if (app) {
-                    _a.sent();
-                    return [3 /*break*/, 3];
+                    apps = _a.sent();
+                    _i = 0, apps_1 = apps;
+                    _a.label = 2;
                 case 2:
-                    e_11 = _a.sent();
-                    console.log(e_11);
+                    if (!(_i < apps_1.length)) return [3 /*break*/, 12];
+                    app = apps_1[_i];
+                    // console.log(`${app.name} - ${app.appsflyerUnitsLeft}`)
+                    if (app.banned || !app.published || !app.appsflyerLogin) {
+                        return [3 /*break*/, 11];
+                    }
+                    else {
+                        console.log("" + app);
+                    }
+                    success = false;
+                    index = 0;
+                    _a.label = 3;
+                case 3:
+                    if (!(index < 3)) return [3 /*break*/, 8];
+                    _a.label = 4;
+                case 4:
+                    _a.trys.push([4, 6, , 7]);
+                    return [4 /*yield*/, checkAppsflyerUnits(app)];
+                case 5:
+                    _a.sent();
+                    success = true;
+                    return [3 /*break*/, 8];
+                case 6:
+                    e_12 = _a.sent();
+                    console.log(app.appsflyerLogin + " / " + app.appsflyerPassword);
+                    return [3 /*break*/, 7];
+                case 7:
+                    index++;
                     return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+                case 8:
+                    if (!!success) return [3 /*break*/, 11];
+                    return [4 /*yield*/, _1.showAppsflyerIsBroken(app)];
+                case 9:
+                    _a.sent();
+                    return [4 /*yield*/, models_1.App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: 0 }).exec()];
+                case 10:
+                    _a.sent();
+                    _a.label = 11;
+                case 11:
+                    _i++;
+                    return [3 /*break*/, 2];
+                case 12:
+                    console.log("Finished AppsFlyer checking");
+                    return [2 /*return*/];
             }
         });
     });
 }
-exports.testApps = testApps;
+exports.checkAppsflyer = checkAppsflyer;
+var wait = function (ms) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        return [2 /*return*/, new Promise(function (resolve) {
+                setTimeout(resolve, ms);
+            })];
+    });
+}); };
+exports.startAppsflyerThread = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var e_13;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!true) return [3 /*break*/, 6];
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                console.log("Starting AppsFlyer check");
+                return [4 /*yield*/, checkAppsflyer()];
+            case 2:
+                _a.sent();
+                return [3 /*break*/, 4];
+            case 3:
+                e_13 = _a.sent();
+                console.log(e_13);
+                return [3 /*break*/, 4];
+            case 4: return [4 /*yield*/, wait(3 * 60 * 60 * 1000)];
+            case 5:
+                _a.sent();
+                return [3 /*break*/, 0];
+            case 6: return [2 /*return*/];
+        }
+    });
+}); };

@@ -57,13 +57,13 @@ exports.checkApps = function () { return __awaiter(void 0, void 0, void 0, funct
             case 2:
                 if (!(_i < apps_1.length)) return [3 /*break*/, 16];
                 app = apps_1[_i];
-                if (app.banned)
+                if (app.banned || app.removed)
                     return [3 /*break*/, 15];
-                console.log("Checking " + app.name + " (" + app.bundle + ")");
+                console.log("Checking " + app.name + " (" + app.bundle + "), banned: " + app.banned + ", removed: " + app.removed + ", published: " + app.published);
                 _a.label = 3;
             case 3:
                 _a.trys.push([3, 12, , 13]);
-                return [4 /*yield*/, checkApp(app.bundle, app.facebookId)];
+                return [4 /*yield*/, checkApp(app.bundle, app)];
             case 4:
                 published = _a.sent();
                 if (!(app.published && !published)) return [3 /*break*/, 8];
@@ -134,7 +134,7 @@ var changeIp = function () { return __awaiter(void 0, void 0, void 0, function (
             }); })];
     });
 }); };
-var checkApp = function (bundle, facebookId) { return __awaiter(void 0, void 0, void 0, function () {
+var checkApp = function (bundle, app) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2 /*return*/, new Promise(function (resolve, reject) {
                 request({
@@ -159,7 +159,7 @@ var checkApp = function (bundle, facebookId) { return __awaiter(void 0, void 0, 
                         else {
                             var ratingMatch = res.body.match(/<div class="pf5lIe"><div aria-label="Rated (.{3})/);
                             if (ratingMatch && ratingMatch[1] !== "0.0") {
-                                models_1.updateAppRating(facebookId, ratingMatch[1]);
+                                models_1.updateAppRating(app, ratingMatch[1]);
                             }
                             resolve(true);
                         }
@@ -195,7 +195,7 @@ exports.startCheckerThread = function () { return __awaiter(void 0, void 0, void
                 e_4 = _a.sent();
                 console.log(e_4);
                 return [3 /*break*/, 4];
-            case 4: return [4 /*yield*/, wait((25 + (Math.random() * 15)) * 60 * 1000)];
+            case 4: return [4 /*yield*/, wait((45 + (Math.random() * 25)) * 60 * 1000)];
             case 5:
                 _a.sent();
                 return [3 /*break*/, 0];

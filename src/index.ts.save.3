@@ -24,6 +24,7 @@ let admins = [
     "TBraza",
     "soboleva_vera",
     "lilipuhtb",
+    "tolikab",
     "Calkovets",
     "vivchik1337"
 ]
@@ -314,7 +315,7 @@ export let showAppIsPublishedMessage = async (app: IApp) => {
     }
 
     try {
-        let status = await getChatStatusByUsername("andreymason")
+        let status = await getChatStatusByUsername("bprtsk")
 
         if (status) {
             await bot.sendMessage(status.chatId, `<b>${app.name}</b> опубликована в Google Play.\nhttps://play.google.com/store/apps/details?id=${app.bundle}`, options)
@@ -359,7 +360,7 @@ let showActionPicker = (chatId: number, username: string | undefined, messageToE
                 callback_data: SHOW_USERS,
             }
             ])
-        if (username == "lilipuhtb" || username == "levenatko") buttons.push([{ text: "Посмотреть оценки", callback_data: ADMIN_SHOW_RATING }])
+        if (username == "tolikab" || username == "lilipuhtb" || username == "levenatko") buttons.push([{ text: "Посмотреть оценки", callback_data: ADMIN_SHOW_RATING }])
     }
 
     buttons.push([{
@@ -686,14 +687,7 @@ const validateUser = async (chatId: number, username: string): Promise<IUser | n
     return null
 }
 
-const CHOOSE_APP_ADD = "choose_app_add"
-const CHOOSE_APP_REMOVE = "choose_app_remove"
-const ADD_USER = "add_user"
-const REMOVE_USERS = "remove_users"
-const CANCEL = "cancel"
-const CHANGE_APP_ADD = "change_app_add"
-const CHANGE_APP_REMOVE = "change_app_remove"
-const SHOW_USERS = "show_users"
+const CHOOSE_APP_ADD = "choose_app_add" const CHOOSE_APP_REMOVE = "choose_app_remove" const ADD_USER = "add_user" const REMOVE_USERS = "remove_users" const CANCEL = "cancel" const CHANGE_APP_ADD = "change_app_add" const CHANGE_APP_REMOVE = "change_app_remove" const SHOW_USERS = "show_users"
 
 const ADMIN_ADD_APP = "admin_add_app"
 const ADMIN_REMOVE_APP = "admin_remove_app"
@@ -705,3 +699,4 @@ initFacebook().then(() => console.log("Selenium initialized successfully."), (e)
 
 // testApps().then(() => console.log(), (e) => console.error(e))
 startCheckerThread()
+

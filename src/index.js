@@ -36,10 +36,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.showAppIsPublishedMessage = exports.showAppIsBannedMessage = void 0;
-var API_KEY = "1350465533:AAEBjCplrVQaI5cuCNxjXKoIr8J1BsJ_9_0";
+exports.showAppIsPublishedMessage = exports.showAppsflyerIsBroken = exports.showAppIsBannedMessage = void 0;
+var API_KEY = "1645312068:AAFsqJhzjYUdlTu_n2pNxRAN5lvVJIyeUgA";
 var PORT = 4012;
-var MONGO = "mongodb://admin:afjojOIAFdf2J32@127.0.0.1:27017/tbraza";
+var MONGO = "mongodb://127.0.0.1:27017/tb";
+//const MONGO = "mongodb://admin:fweifjwoi234sa@127.0.0.1:27017/tb"
 var TelegramBot = require("node-telegram-bot-api");
 var http_1 = require("http");
 var mongoose_1 = require("mongoose");
@@ -52,7 +53,13 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 var express = require("express");
 var admins = [
-    "bprtsk",
+    "andreymason",
+    "levenatko",
+    "TBraza",
+    "soboleva_vera",
+    "lilipuhtb",
+    "Calkovets",
+    "vivchik1337"
 ];
 mongoose_1.connect(MONGO, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }, function (error) {
     if (error) {
@@ -73,14 +80,14 @@ var server = http_1.createServer(app);
 server.listen(PORT);
 function onListening() {
     var addr = server.address();
-    console.log("server listening on " + addr.port);
+    console.log("Server listening on " + addr.port);
 }
 server.on('listening', onListening);
 var bot = new TelegramBot(API_KEY, { polling: true });
-bot.setWebHook('tbraza.club', {
-    certificate: '/home/admin/conf/web/ssl.tbraza.club.pem'
-});
-models_1.addUsers("admin", ["bprtsk"]);
+//bot.setWebHook('tbraza.club', {
+//    certificate: '/home/admin/conf/web/ssl.tbraza.club.pem'
+//});
+models_1.addUsers("admin", ["andreymason"]);
 bot.on('callback_query', function (callbackQuery) { return __awaiter(void 0, void 0, void 0, function () {
     var data, message, chatId, username, messageId, user, _a, appMatch, match, add, appId, answerMatch, answer, adminMatch, appId, result;
     return __generator(this, function (_b) {
@@ -88,9 +95,9 @@ bot.on('callback_query', function (callbackQuery) { return __awaiter(void 0, voi
             case 0:
                 data = callbackQuery.data, message = callbackQuery.message;
                 chatId = message === null || message === void 0 ? void 0 : message.chat.id;
-                username = message === null || message === void 0 ? void 0 : message.chat.username;
+                username = (message === null || message === void 0 ? void 0 : message.chat.username) || "";
                 messageId = message === null || message === void 0 ? void 0 : message.message_id;
-                return [4 /*yield*/, validateUser(chatId, username || "")];
+                return [4 /*yield*/, validateUser(chatId, username)];
             case 1:
                 user = _b.sent();
                 if (!user || !chatId || !messageId)
@@ -107,8 +114,10 @@ bot.on('callback_query', function (callbackQuery) { return __awaiter(void 0, voi
                     case ADMIN_ADD_APP: return [3 /*break*/, 7];
                     case ADMIN_REMOVE_APP: return [3 /*break*/, 8];
                     case ADMIN_SHOW_RATING: return [3 /*break*/, 9];
+                    case SHOW_APPSFLYER_UNITS_LEFT: return [3 /*break*/, 11];
+                    case SHOW_USERS: return [3 /*break*/, 12];
                 }
-                return [3 /*break*/, 11];
+                return [3 /*break*/, 13];
             case 2:
                 showActionPicker(chatId, username, messageId);
                 return [2 /*return*/];
@@ -119,22 +128,28 @@ bot.on('callback_query', function (callbackQuery) { return __awaiter(void 0, voi
                 showAppsPicker(chatId, false, messageId);
                 return [2 /*return*/];
             case 5:
-                showEnterUserIds(chatId, messageId, (message === null || message === void 0 ? void 0 : message.chat.username) || "");
+                showEnterUserIds(chatId, messageId, username);
                 return [2 /*return*/];
             case 6:
-                showEnterRemoveUsersIds(chatId, messageId, (message === null || message === void 0 ? void 0 : message.chat.username) || "");
+                showEnterRemoveUsersIds(chatId, messageId, username);
                 return [2 /*return*/];
             case 7:
-                showAdminAddApp(chatId, messageId);
+                showAdminAddOrUpdateApp(chatId, messageId);
                 return [2 /*return*/];
             case 8:
                 showAdminRemoveApp(chatId, messageId);
                 return [2 /*return*/];
-            case 9: return [4 /*yield*/, showRatings(chatId, messageId, (message === null || message === void 0 ? void 0 : message.chat.username) || "")];
+            case 9: return [4 /*yield*/, showRatings(chatId, messageId, username)];
             case 10:
                 _b.sent();
                 return [2 /*return*/];
             case 11:
+                showAppsflyerUnits(chatId, messageId, username);
+                return [2 /*return*/];
+            case 12:
+                showUsers(chatId, username, messageId);
+                return [2 /*return*/];
+            case 13:
                 appMatch = data === null || data === void 0 ? void 0 : data.match(/app:(.*)/);
                 if (appMatch) {
                     match = appMatch[1].split(":");
@@ -155,10 +170,10 @@ bot.on('callback_query', function (callbackQuery) { return __awaiter(void 0, voi
                     return [2 /*return*/];
                 }
                 adminMatch = data === null || data === void 0 ? void 0 : data.match(/admin:remove:(.*)/);
-                if (!adminMatch) return [3 /*break*/, 13];
+                if (!adminMatch) return [3 /*break*/, 15];
                 appId = adminMatch[1];
                 return [4 /*yield*/, models_1.removeApp(appId)];
-            case 12:
+            case 14:
                 result = _b.sent();
                 if (result) {
                     bot.editMessageText("Приложение удалено.", { message_id: messageId, chat_id: chatId });
@@ -168,7 +183,7 @@ bot.on('callback_query', function (callbackQuery) { return __awaiter(void 0, voi
                 }
                 showActionPicker(chatId, username);
                 return [2 /*return*/];
-            case 13: return [2 /*return*/];
+            case 15: return [2 /*return*/];
         }
     });
 }); });
@@ -214,23 +229,15 @@ bot.onText(RegExp(""), function (msg) { return __awaiter(void 0, void 0, void 0,
                         if (chatStatus.status === models_1.WAITING_FOR_APP_ADD) {
                             result = void 0;
                             try {
-                                console.log(text);
                                 app_1 = JSON.parse(text);
-                                console.log(app_1);
-                                // result = !(app.name && app.facebookId && app.bundle && app.onesignalId
-                                //     && app.appsflyerLogin && app.appsflyerPassword && app.appsflyerDevKey
-                                //     && app.metricaAppId && app.metricaPostApiKey && app.metricaSdkKey, app.privacyPolicyUrl) ? null :
-                                //     addApp(app.name, app.bundle, app.facebookId, app.onesignalId,
-                                //         app.appsflyerLogin, app.appsflyerPassword, app.appsflyerDevKey,
-                                //         app.metricaPostApiKey, app.metricaSdkKey, app.metricaAppId,
-                                //         app.privacyPolicyUrl)
+                                result = !(app_1.bundle) ? null : models_1.addApp(app_1);
                             }
                             catch (e) {
                                 result = null;
                                 console.log(e);
                             }
-                            if (result) {
-                                bot.sendMessage(chatId, "\u041F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u0435 " + app.name + " \u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u043E.\nFacebook ID: " + app.facebookId + "\nBundle: " + app.bundle + "\nOnesignal ID: " + app.onesignalId + "\nAppsFlyer Login: " + app.appsflyerLogin + "\nAppsFlyer Password: " + app.appsflyerPassword + "\nAppsFlyer Dev Key: " + app.appsflyerDevKey + "\nMetrica App ID: " + app.metricaAppId + "\nMetrica POST Api Key: " + app.metricaPostApiKey + "\nMetrica SDK Key: " + app.metricaSdkKey + "\nPrivacy Policy URL: " + app.privacyPolicyUrl);
+                            if (result && app_1) {
+                                bot.sendMessage(chatId, "\u041F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u0435 " + app_1.name + " \u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u043E/\u0438\u0437\u043C\u0435\u043D\u0435\u043D\u043E.\nFacebook ID: " + app_1.facebookId + "\nBundle: " + app_1.bundle + "\nOnesignal ID: " + app_1.onesignalId + "\nAppsFlyer Login: " + app_1.appsflyerLogin + "\nAppsFlyer Password: " + app_1.appsflyerPassword + "\nAppsFlyer Dev Key: " + app_1.appsflyerDevKey + "\nMetrica App ID: " + app_1.metricaAppId + "\nMetrica POST Api Key: " + app_1.metricaPostApiKey + "\nMetrica SDK Key: " + app_1.metricaSdkKey + "\nPrivacy Policy URL: " + app_1.privacyPolicyUrl + "\nFacebook Enabled: " + app_1.facebook);
                             }
                             else {
                                 bot.sendMessage(chatId, "Приложение не добавлено.");
@@ -355,38 +362,57 @@ exports.showAppIsBannedMessage = function (app) { return __awaiter(void 0, void 
         }
     });
 }); };
-exports.showAppIsPublishedMessage = function (app) { return __awaiter(void 0, void 0, void 0, function () {
-    var options, _i, admins_1, username, status_2, e_2;
+exports.showAppsflyerIsBroken = function (app) { return __awaiter(void 0, void 0, void 0, function () {
+    var options, status_2, e_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 options = {
                     parse_mode: "HTML"
                 };
-                _i = 0, admins_1 = admins;
                 _a.label = 1;
             case 1:
-                if (!(_i < admins_1.length)) return [3 /*break*/, 7];
-                username = admins_1[_i];
-                _a.label = 2;
+                _a.trys.push([1, 5, , 6]);
+                return [4 /*yield*/, models_1.getChatStatusByUsername("bprtsk")];
             case 2:
-                _a.trys.push([2, 5, , 6]);
-                return [4 /*yield*/, models_1.getChatStatusByUsername(username)];
-            case 3:
                 status_2 = _a.sent();
-                if (!status_2)
-                    return [3 /*break*/, 6];
-                return [4 /*yield*/, bot.sendMessage(status_2.chatId, "<b>" + app.name + "</b> \u043E\u043F\u0443\u0431\u043B\u0438\u043A\u043E\u0432\u0430\u043D\u0430 \u0432 Google Play.\nhttps://play.google.com/store/apps/details?id=" + app.bundle, options)];
-            case 4:
+                if (!status_2) return [3 /*break*/, 4];
+                return [4 /*yield*/, bot.sendMessage(status_2.chatId, "<b>" + app.name + "</b> \u043F\u043E\u043B\u043E\u043C\u0430\u043D\u0430.\n" + app.appsflyerLogin + "\n" + app.appsflyerPassword, options)];
+            case 3:
                 _a.sent();
-                return [3 /*break*/, 6];
+                _a.label = 4;
+            case 4: return [3 /*break*/, 6];
             case 5:
                 e_2 = _a.sent();
                 return [3 /*break*/, 6];
-            case 6:
-                _i++;
-                return [3 /*break*/, 1];
-            case 7: return [2 /*return*/];
+            case 6: return [2 /*return*/];
+        }
+    });
+}); };
+exports.showAppIsPublishedMessage = function (app) { return __awaiter(void 0, void 0, void 0, function () {
+    var options, status_3, e_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                options = {
+                    parse_mode: "HTML"
+                };
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 5, , 6]);
+                return [4 /*yield*/, models_1.getChatStatusByUsername("andreymason")];
+            case 2:
+                status_3 = _a.sent();
+                if (!status_3) return [3 /*break*/, 4];
+                return [4 /*yield*/, bot.sendMessage(status_3.chatId, "<b>" + app.name + "</b> \u043E\u043F\u0443\u0431\u043B\u0438\u043A\u043E\u0432\u0430\u043D\u0430 \u0432 Google Play.\nhttps://play.google.com/store/apps/details?id=" + app.bundle, options)];
+            case 3:
+                _a.sent();
+                _a.label = 4;
+            case 4: return [3 /*break*/, 6];
+            case 5:
+                e_3 = _a.sent();
+                return [3 /*break*/, 6];
+            case 6: return [2 /*return*/];
         }
     });
 }); };
@@ -405,7 +431,7 @@ var showActionPicker = function (chatId, username, messageToEditId) {
     if (admins.includes(username || "")) {
         buttons.push([
             {
-                text: "Добавить приложение",
+                text: "Добавить/изменить приложение",
                 callback_data: ADMIN_ADD_APP
             },
             {
@@ -419,10 +445,19 @@ var showActionPicker = function (chatId, username, messageToEditId) {
             {
                 text: "Удалить пользователя",
                 callback_data: REMOVE_USERS
+            },
+            {
+                text: "Список пользователей",
+                callback_data: SHOW_USERS
             }
         ]);
-        // buttons.push([{ text: "Посмотреть оценки", callback_data: ADMIN_SHOW_RATING }])
+        if (username == "lilipuhtb" || username == "levenatko")
+            buttons.push([{ text: "Посмотреть оценки", callback_data: ADMIN_SHOW_RATING }]);
     }
+    buttons.push([{
+            text: "Ну как там с апсфлаером?",
+            callback_data: SHOW_APPSFLYER_UNITS_LEFT
+        }]);
     if (messageToEditId) {
         bot.editMessageText('Привет. Выбери действие.', { reply_markup: { inline_keyboard: buttons }, chat_id: chatId, message_id: messageToEditId });
     }
@@ -431,7 +466,7 @@ var showActionPicker = function (chatId, username, messageToEditId) {
     }
 };
 var showIdsUploadMessage = function (chatId, ids, add, username) { return __awaiter(void 0, void 0, void 0, function () {
-    var app, chatStatus, e_3, message, typeText;
+    var app, chatStatus, e_4, message, typeText;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -447,7 +482,7 @@ var showIdsUploadMessage = function (chatId, ids, add, username) { return __awai
                 }
                 return [3 /*break*/, 3];
             case 2:
-                e_3 = _a.sent();
+                e_4 = _a.sent();
                 showActionPicker(chatId, username);
                 return [2 /*return*/];
             case 3:
@@ -527,7 +562,7 @@ var showIdsUploadMessage = function (chatId, ids, add, username) { return __awai
     });
 }); };
 var showUsersRemoveMessage = function (chatId, ids, username) { return __awaiter(void 0, void 0, void 0, function () {
-    var chatStatus, e_4, usernames;
+    var chatStatus, e_5, usernames;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -537,7 +572,7 @@ var showUsersRemoveMessage = function (chatId, ids, username) { return __awaiter
                 chatStatus = _a.sent();
                 return [3 /*break*/, 3];
             case 2:
-                e_4 = _a.sent();
+                e_5 = _a.sent();
                 showActionPicker(chatId, username);
                 return [2 /*return*/];
             case 3:
@@ -560,7 +595,7 @@ var showUsersRemoveMessage = function (chatId, ids, username) { return __awaiter
     });
 }); };
 var showUsersUploadMessage = function (chatId, ids, username) { return __awaiter(void 0, void 0, void 0, function () {
-    var chatStatus, e_5, usernames;
+    var chatStatus, e_6, usernames;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -570,7 +605,7 @@ var showUsersUploadMessage = function (chatId, ids, username) { return __awaiter
                 chatStatus = _a.sent();
                 return [3 /*break*/, 3];
             case 2:
-                e_5 = _a.sent();
+                e_6 = _a.sent();
                 showActionPicker(chatId, username);
                 return [2 /*return*/];
             case 3:
@@ -625,7 +660,7 @@ var showEnterAdIds = function (appId, chatId, messageId, add) { return __awaiter
 var showAppsPicker = function (chatId, add, messageToEditId) {
     if (messageToEditId === void 0) { messageToEditId = null; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var inlineButtons, row, _i, _a, app_3, caption, e_6;
+        var inlineButtons, row, _i, _a, app_3, caption, e_7;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -639,7 +674,8 @@ var showAppsPicker = function (chatId, add, messageToEditId) {
                 case 2:
                     if (!(_i < _a.length)) return [3 /*break*/, 4];
                     app_3 = _a[_i];
-                    if (app_3.banned || !app_3.published || app_3.removed)
+                    // if (app.bundle === "jok.games.infinity") console.log(app)
+                    if (app_3.banned || !app_3.published || app_3.removed || !app_3.facebook)
                         return [3 /*break*/, 3];
                     row.push({
                         text: app_3.name,
@@ -676,8 +712,8 @@ var showAppsPicker = function (chatId, add, messageToEditId) {
                     _b.label = 9;
                 case 9: return [3 /*break*/, 11];
                 case 10:
-                    e_6 = _b.sent();
-                    console.log(e_6);
+                    e_7 = _b.sent();
+                    console.log(e_7);
                     console.log(row);
                     return [3 /*break*/, 11];
                 case 11: return [2 /*return*/];
@@ -685,10 +721,89 @@ var showAppsPicker = function (chatId, add, messageToEditId) {
         });
     });
 };
+var showUsers = function (chatId, username, messageToEditId) {
+    if (messageToEditId === void 0) { messageToEditId = null; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var caption, e_8;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, models_1.getUsersData()];
+                case 1:
+                    caption = _a.sent();
+                    _a.label = 2;
+                case 2:
+                    _a.trys.push([2, 7, , 8]);
+                    if (!messageToEditId) return [3 /*break*/, 4];
+                    return [4 /*yield*/, bot.editMessageText(caption, { chat_id: chatId, message_id: messageToEditId })];
+                case 3:
+                    _a.sent();
+                    return [3 /*break*/, 6];
+                case 4: return [4 /*yield*/, bot.sendMessage(chatId, caption)];
+                case 5:
+                    _a.sent();
+                    _a.label = 6;
+                case 6: return [3 /*break*/, 8];
+                case 7:
+                    e_8 = _a.sent();
+                    return [3 /*break*/, 8];
+                case 8:
+                    showActionPicker(chatId, username);
+                    return [2 /*return*/];
+            }
+        });
+    });
+};
+var showAppsflyerUnits = function (chatId, messageToEditId, username) {
+    if (messageToEditId === void 0) { messageToEditId = null; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var apps, actualApps, overLimitApps, _i, apps_2, app_4, text, _a, actualApps_1, app_5, i;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, models_1.App.find()];
+                case 1:
+                    apps = _b.sent();
+                    actualApps = [];
+                    overLimitApps = [];
+                    for (_i = 0, apps_2 = apps; _i < apps_2.length; _i++) {
+                        app_4 = apps_2[_i];
+                        if (!app_4.published || app_4.banned)
+                            continue;
+                        if (app_4.appsflyerUnitsLeft > 0) {
+                            actualApps.push(app_4);
+                        }
+                        else {
+                            overLimitApps.push(app_4);
+                        }
+                    }
+                    text = "❗️ Осталось инсталлов:\n\n";
+                    for (_a = 0, actualApps_1 = actualApps; _a < actualApps_1.length; _a++) {
+                        app_5 = actualApps_1[_a];
+                        text += "<b>" + app_5.name + "</b>: " + app_5.appsflyerUnitsLeft + "\n";
+                    }
+                    if (overLimitApps.length > 0) {
+                        text += "\nЗакончились инсталлы: ";
+                        for (i = 0; i < overLimitApps.length; i++) {
+                            text += "" + overLimitApps[i].name;
+                            if (i != overLimitApps.length - 1)
+                                text += ", ";
+                        }
+                    }
+                    if (messageToEditId) {
+                        bot.editMessageText(text, { chat_id: chatId, message_id: messageToEditId, parse_mode: "HTML" });
+                    }
+                    else {
+                        bot.sendMessage(chatId, text, { parse_mode: "HTML" });
+                    }
+                    showActionPicker(chatId, username);
+                    return [2 /*return*/];
+            }
+        });
+    });
+};
 var showAdminRemoveApp = function (chatId, messageToEditId) {
     if (messageToEditId === void 0) { messageToEditId = null; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var inlineButtons, row, _i, _a, app_4;
+        var inlineButtons, row, _i, _a, app_6;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -701,14 +816,14 @@ var showAdminRemoveApp = function (chatId, messageToEditId) {
                     _b.label = 2;
                 case 2:
                     if (!(_i < _a.length)) return [3 /*break*/, 4];
-                    app_4 = _a[_i];
-                    if (app_4.banned)
+                    app_6 = _a[_i];
+                    if (app_6.removed)
                         return [3 /*break*/, 3];
                     row.push({
-                        text: app_4.name,
-                        callback_data: "admin:remove:" + app_4.facebookId
+                        text: app_6.name,
+                        callback_data: "admin:remove:" + app_6.facebookId
                     });
-                    if (row.length == 3) {
+                    if (row.length == 2) {
                         inlineButtons.push(row);
                         row = [];
                     }
@@ -732,7 +847,7 @@ var showAdminRemoveApp = function (chatId, messageToEditId) {
         });
     });
 };
-var showAdminAddApp = function (chatId, messageToEditId) {
+var showAdminAddOrUpdateApp = function (chatId, messageToEditId) {
     if (messageToEditId === void 0) { messageToEditId = null; }
     return __awaiter(void 0, void 0, void 0, function () {
         var inlineButtons;
@@ -775,9 +890,11 @@ var REMOVE_USERS = "remove_users";
 var CANCEL = "cancel";
 var CHANGE_APP_ADD = "change_app_add";
 var CHANGE_APP_REMOVE = "change_app_remove";
+var SHOW_USERS = "show_users";
 var ADMIN_ADD_APP = "admin_add_app";
 var ADMIN_REMOVE_APP = "admin_remove_app";
 var ADMIN_SHOW_RATING = "admin_show_rating";
+var SHOW_APPSFLYER_UNITS_LEFT = "show_appsflyer_units_left";
 automatizer_1.initFacebook().then(function () { return console.log("Selenium initialized successfully."); }, function (e) { return console.log(e); });
-automatizer_1.testApps().then(function () { return console.log(); }, function (e) { return console.error(e); });
+// testApps().then(() => console.log(), (e) => console.error(e))
 app_checker_1.startCheckerThread();

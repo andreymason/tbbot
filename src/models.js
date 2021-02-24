@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -36,7 +47,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.updateChatApp = exports.updateChatUploadMessageId = exports.updateChatStatus = exports.getChatStatusByUsername = exports.getChatStatusByChatId = exports.createChatStatus = exports.validApp = exports.allStatuses = exports.getUser = exports.removeApp = exports.updateApp = exports.reformatDb = exports.addApp = exports.getApp = exports.getApps = exports.updateAppRating = exports.markAppAsPublished = exports.markAppAsBanned = exports.removeUsers = exports.addUsers = exports.App = exports.showUsers = exports.ChatStatusModel = exports.OSGroupModel = exports.OSSegmentModel = exports.WAITING_FOR_REMOVE_USERNAMES = exports.WAITING_FOR_APP_ADD = exports.WAITING_FOR_IDS_REMOVE = exports.WAITING_FOR_IDS_ADD = exports.PROCESSING_IDS = exports.WAITING_FOR_USERNAMES = exports.IDLE = void 0;
+exports.updateChatApp = exports.updateChatUploadMessageId = exports.updateChatStatus = exports.getChatStatusByUsername = exports.getChatStatusByChatId = exports.createChatStatus = exports.validApp = exports.allStatuses = exports.getUser = exports.removeApp = exports.updateApp = exports.reformatDb = exports.addApp = exports.getApp = exports.getApps = exports.updateAppRating = exports.markAppAsPublished = exports.markAppAsBanned = exports.removeUsers = exports.addUsers = exports.App = exports.getUsersData = exports.ChatStatusModel = exports.OSGroupModel = exports.OSSegmentModel = exports.WAITING_FOR_REMOVE_USERNAMES = exports.WAITING_FOR_APP_ADD = exports.WAITING_FOR_IDS_REMOVE = exports.WAITING_FOR_IDS_ADD = exports.PROCESSING_IDS = exports.WAITING_FOR_USERNAMES = exports.IDLE = void 0;
 var mongoose_1 = require("mongoose");
 exports.IDLE = 0;
 exports.WAITING_FOR_USERNAMES = 2;
@@ -80,7 +91,7 @@ var User = mongoose_1.models.User || mongoose_1.model('User', UserSchema);
 var AppSchema = new mongoose_1.Schema({
     name: String,
     facebookId: String,
-    bundle: String,
+    bundle: { type: String, unique: true },
     onesignalId: String,
     rating: {
         type: String,
@@ -105,20 +116,25 @@ var AppSchema = new mongoose_1.Schema({
     removed: {
         type: Boolean,
         "default": false
+    },
+    facebook: {
+        type: Boolean,
+        "default": true
     }
 });
-exports.showUsers = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var users, _i, users_1, user;
+exports.getUsersData = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var users, text, _i, users_1, user;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, User.find()];
             case 1:
                 users = _a.sent();
+                text = "";
                 for (_i = 0, users_1 = users; _i < users_1.length; _i++) {
                     user = users_1[_i];
-                    console.log("@" + user.username + ", \u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D @" + user.addedBy);
+                    text += "@" + user.username + ", \u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D @" + user.addedBy + "\n";
                 }
-                return [2 /*return*/];
+                return [2 /*return*/, text];
         }
     });
 }); };
@@ -154,41 +170,55 @@ exports.addUsers = function (by, users) { return __awaiter(void 0, void 0, void 
     });
 }); };
 exports.removeUsers = function (users) { return __awaiter(void 0, void 0, void 0, function () {
-    var _i, users_3, username;
+    var _i, users_3, username, result, user;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _i = 0, users_3 = users;
                 _a.label = 1;
             case 1:
-                if (!(_i < users_3.length)) return [3 /*break*/, 4];
+                if (!(_i < users_3.length)) return [3 /*break*/, 5];
                 username = users_3[_i];
-                return [4 /*yield*/, User.remove({
+                console.log(username);
+                return [4 /*yield*/, User.deleteOne({
+                        username: username
+                    }).exec()];
+            case 2:
+                result = _a.sent();
+                return [4 /*yield*/, User.findOne({
                         username: username
                     })];
-            case 2:
-                _a.sent();
-                _a.label = 3;
             case 3:
+                user = _a.sent();
+                console.log(user);
+                console.log(result);
+                _a.label = 4;
+            case 4:
                 _i++;
                 return [3 /*break*/, 1];
-            case 4: return [2 /*return*/];
+            case 5: return [2 /*return*/];
         }
     });
 }); };
 exports.markAppAsBanned = function (app) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        return [2 /*return*/, exports.App.updateOne({ facebookId: app.facebookId }, { banned: true })];
+        return [2 /*return*/, exports.App.updateOne({ facebookId: app.facebookId }, { banned: true }).exec()];
     });
 }); };
 exports.markAppAsPublished = function (app) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        return [2 /*return*/, exports.App.updateOne({ facebookId: app.facebookId }, { published: true })];
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (exports.App.findById(app._id)).update({ published: true }).exec()];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
     });
 }); };
-exports.updateAppRating = function (facebookId, rating) { return __awaiter(void 0, void 0, void 0, function () {
+exports.updateAppRating = function (app, rating) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        return [2 /*return*/, exports.App.updateOne({ facebookId: facebookId }, { rating: rating })];
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (exports.App.findById(app._id)).update({ rating: rating }).exec()];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
     });
 }); };
 exports.getApps = function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -201,21 +231,20 @@ exports.getApp = function (facebookId) { return __awaiter(void 0, void 0, void 0
         return [2 /*return*/, exports.App.findOne({ facebookId: facebookId })];
     });
 }); };
-exports.addApp = function (name, bundle, facebookId, onesignalId, appsflyerLogin, appsflyerPassword, appsflyerDevKey, metricaPostApiKey, metricaSdkKey, metricaAppId, privacyPolicyUrl) { return __awaiter(void 0, void 0, void 0, function () {
+// App.updateOne({bundle: "jok.games.infinity"}, {published: true}).exec()
+// App.remove({ bundle: "vik.kingage.paptoss", facebook: true }).exec()
+// App.remove({ bundle: "pol.wolfsca"}).exec()
+exports.addApp = function (app) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, exports.App.findOne({ facebookId: facebookId })];
+            case 0: return [4 /*yield*/, exports.App.findOne({ bundle: app.bundle }).exec()];
             case 1:
-                if (_a.sent())
-                    return [2 /*return*/];
-                return [2 /*return*/, exports.App.create({
-                        name: name, bundle: bundle, facebookId: facebookId, onesignalId: onesignalId,
-                        banned: false, published: false, rating: "0.0", group: null,
-                        appsflyerUnitsLeft: 12000, appsflyerLogin: appsflyerLogin, appsflyerPassword: appsflyerPassword, appsflyerDevKey: appsflyerDevKey,
-                        metricaSdkKey: metricaSdkKey, metricaPostApiKey: metricaPostApiKey, metricaAppId: metricaAppId,
-                        privacyPolicyUrl: privacyPolicyUrl,
-                        removed: false
-                    })];
+                if (_a.sent()) {
+                    return [2 /*return*/, exports.App.updateOne({ bundle: app.bundle }, app).exec()];
+                }
+                else
+                    return [2 /*return*/, exports.App.create(__assign(__assign({}, app), { banned: false, published: false, rating: "0.0", group: null }))];
+                return [2 /*return*/];
         }
     });
 }); };
@@ -244,12 +273,12 @@ exports.reformatDb = function () { return __awaiter(void 0, void 0, void 0, func
 }); };
 exports.updateApp = function (facebookId, bundle, onesignalId) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        return [2 /*return*/, exports.App.update({ facebookId: facebookId }, { bundle: bundle, onesignalId: onesignalId, banned: false })];
+        return [2 /*return*/, exports.App.update({ facebookId: facebookId }, { bundle: bundle, onesignalId: onesignalId, banned: false }).exec()];
     });
 }); };
 exports.removeApp = function (facebookId) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        return [2 /*return*/, exports.App.update({ facebookId: facebookId }, { removedFromBot: true })];
+        return [2 /*return*/, exports.App.update({ facebookId: facebookId }, { removed: true }).exec()];
     });
 }); };
 exports.getUser = function (username) { return __awaiter(void 0, void 0, void 0, function () {
@@ -329,7 +358,7 @@ exports.getChatStatusByUsername = function (username) { return __awaiter(void 0,
 exports.updateChatStatus = function (chatId, status) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, exports.ChatStatusModel.updateOne({ chatId: chatId }, { status: status })];
+            case 0: return [4 /*yield*/, exports.ChatStatusModel.updateOne({ chatId: chatId }, { status: status }).exec()];
             case 1:
                 _a.sent();
                 return [2 /*return*/, exports.ChatStatusModel.findOne({ chatId: chatId })];
@@ -339,7 +368,7 @@ exports.updateChatStatus = function (chatId, status) { return __awaiter(void 0, 
 exports.updateChatUploadMessageId = function (chatId, messageId) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, exports.ChatStatusModel.updateOne({ chatId: chatId }, { uploadMessageId: messageId })];
+            case 0: return [4 /*yield*/, exports.ChatStatusModel.updateOne({ chatId: chatId }, { uploadMessageId: messageId }).exec()];
             case 1:
                 _a.sent();
                 return [2 /*return*/, exports.ChatStatusModel.findOne({ chatId: chatId })];
@@ -349,10 +378,11 @@ exports.updateChatUploadMessageId = function (chatId, messageId) { return __awai
 exports.updateChatApp = function (chatId, app) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, exports.ChatStatusModel.updateOne({ chatId: chatId }, { app: app })];
+            case 0: return [4 /*yield*/, exports.ChatStatusModel.updateOne({ chatId: chatId }, { app: app }).exec()];
             case 1:
                 _a.sent();
                 return [2 /*return*/, exports.ChatStatusModel.findOne({ chatId: chatId })];
         }
     });
 }); };
+// App.update({},{appsflyerUnitsLeft:12000}).exec()

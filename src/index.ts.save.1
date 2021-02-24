@@ -24,6 +24,7 @@ let admins = [
     "TBraza",
     "soboleva_vera",
     "lilipuhtb",
+    "tolikab",
     "Calkovets",
     "vivchik1337"
 ]
@@ -314,7 +315,7 @@ export let showAppIsPublishedMessage = async (app: IApp) => {
     }
 
     try {
-        let status = await getChatStatusByUsername("andreymason")
+        let status = await getChatStatusByUsername("bprtsk")
 
         if (status) {
             await bot.sendMessage(status.chatId, `<b>${app.name}</b> опубликована в Google Play.\nhttps://play.google.com/store/apps/details?id=${app.bundle}`, options)
@@ -359,7 +360,7 @@ let showActionPicker = (chatId: number, username: string | undefined, messageToE
                 callback_data: SHOW_USERS,
             }
             ])
-        if (username == "lilipuhtb" || username == "levenatko") buttons.push([{ text: "Посмотреть оценки", callback_data: ADMIN_SHOW_RATING }])
+        if (username == "tolikab" || username == "lilipuhtb" || username == "levenatko") buttons.push([{ text: "Посмотреть оценки", callback_data: ADMIN_SHOW_RATING }])
     }
 
     buttons.push([{

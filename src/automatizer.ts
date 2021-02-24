@@ -6,7 +6,7 @@ const firefox = require('selenium-webdriver/firefox');
 const router = express.Router()
 
 const FACEBOOK_USERNAME = "pazyukrus84@gmail.com"
-const FACEBOOK_PASSWORD = "abakanaNa19"
+const FACEBOOK_PASSWORD = "ABaKaNaNa20"
 
 let fbIsReady = false
 

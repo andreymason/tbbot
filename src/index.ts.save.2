@@ -1,4 +1,4 @@
-const API_KEY = "1645312068:AAFsqJhzjYUdlTu_n2pNxRAN5lvVJIyeUgA"
+const API_KEY = "1645312068:AAFmVESHusc2PpOmxy1xRONnZrK_IiK5o_w"
 const PORT = 4012
 const MONGO = "mongodb://127.0.0.1:27017/tb"
 //const MONGO = "mongodb://admin:fweifjwoi234sa@127.0.0.1:27017/tb"
@@ -7,7 +7,7 @@ import TelegramBot = require('node-telegram-bot-api')
 import { createServer } from 'http';
 import { connect } from 'mongoose';
 import { AddressInfo } from 'net';
-import { startCheckerThread } from './app_checker';
+��import { startCheckerThread } from './app_checker';
 import { addRequest, EntryType, FacebookQueueEntry, FacebookResult, initFacebook } from './automatizer';
 import { Router as InstallLogRouter } from './install_log';
 import { addApp, addUsers, allStatuses, App, createChatStatus, getApp, getApps, getChatStatusByChatId, getChatStatusByUsername, getUser, getUsersData, IApp, IChatStatus, IDLE, IUser, PROCESSING_IDS, removeApp, removeUsers, updateChatApp, updateChatStatus, updateChatUploadMessageId, WAITING_FOR_APP_ADD, WAITING_FOR_IDS_ADD, WAITING_FOR_IDS_REMOVE, WAITING_FOR_REMOVE_USERNAMES, WAITING_FOR_USERNAMES } from './models';
@@ -24,6 +24,7 @@ let admins = [
     "TBraza",
     "soboleva_vera",
     "lilipuhtb",
+    "tolikab",
     "Calkovets",
     "vivchik1337"
 ]
@@ -314,7 +315,7 @@ export let showAppIsPublishedMessage = async (app: IApp) => {
     }
 
     try {
-        let status = await getChatStatusByUsername("andreymason")
+        let status = await getChatStatusByUsername("bprtsk")
 
         if (status) {
             await bot.sendMessage(status.chatId, `<b>${app.name}</b> опубликована в Google Play.\nhttps://play.google.com/store/apps/details?id=${app.bundle}`, options)
@@ -359,7 +360,7 @@ let showActionPicker = (chatId: number, username: string | undefined, messageToE
                 callback_data: SHOW_USERS,
             }
             ])
-        if (username == "lilipuhtb" || username == "levenatko") buttons.push([{ text: "Посмотреть оценки", callback_data: ADMIN_SHOW_RATING }])
+        if (username == "tolikab" || username == "lilipuhtb" || username == "levenatko") buttons.push([{ text: "Посмотреть оценки", callback_data: ADMIN_SHOW_RATING }])
     }
 
     buttons.push([{
