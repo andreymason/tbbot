@@ -186,6 +186,14 @@ bot.onText(RegExp(""), async (msg) => {
                     result = null
                     console.log(e)
                 }
+				
+				let found = await App.findOne({bundle: app.bundle}))
+				
+				console.log({
+					initial: app,
+					result: result,
+					found: found
+				})
 
                 if (result && app) {
                     bot.sendMessage(chatId, `Приложение ${app.name} добавлено/изменено.\nFacebook ID: ${app.facebookId}\nBundle: ${app.bundle}\nOnesignal ID: ${app.onesignalId}\nAppsFlyer Login: ${app.appsflyerLogin}\nAppsFlyer Password: ${app.appsflyerPassword}\nAppsFlyer Dev Key: ${app.appsflyerDevKey}\nMetrica App ID: ${app.metricaAppId}\nMetrica POST Api Key: ${app.metricaPostApiKey}\nMetrica SDK Key: ${app.metricaSdkKey}\nPrivacy Policy URL: ${app.privacyPolicyUrl}\nFacebook Enabled: ${app.facebook}`)
@@ -298,7 +306,7 @@ export let showAppsflyerIsBroken = async (app: IApp) => {
     }
 
     try {
-        let status = await getChatStatusByUsername("bprtsk")
+        let status = await getChatStatusByUsername("andreymason")
 
         if (status) {
             await bot.sendMessage(status.chatId, `<b>${app.name}</b> поломана.\n${app.appsflyerLogin}\n${app.appsflyerPassword}`, options)
@@ -314,11 +322,16 @@ export let showAppIsPublishedMessage = async (app: IApp) => {
     }
 
     try {
-        let status = await getChatStatusByUsername("andreymason")
+		let users = ["andreymason", "levenatko"]
+		
+		for (let user of users) {
+			let status = await getChatStatusByUsername(user)
 
-        if (status) {
-            await bot.sendMessage(status.chatId, `<b>${app.name}</b> опубликована в Google Play.\nhttps://play.google.com/store/apps/details?id=${app.bundle}`, options)
-        }
+			if (status) {
+				await bot.sendMessage(status.chatId, `<b>${app.name}</b> опубликована в Google Play.\nhttps://play.google.com/store/apps/details?id=${app.bundle}`, options)
+			}
+		}
+        
     } catch (e) {
 
     }
