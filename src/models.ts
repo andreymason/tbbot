@@ -238,7 +238,7 @@ export const reformatDb = async () => {
     let apps = await App.find()
 
     for (let app of apps) {
-        await app.update({ facebookId: app.facebookId })
+        await app.update({ facebookId: app.facebookId }).exec()
     }
 }
 
