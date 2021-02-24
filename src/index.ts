@@ -187,13 +187,13 @@ bot.onText(RegExp(""), async (msg) => {
                     console.log(e)
                 }
 				
-				//let found = await App.findOne({bundle: app.bundle})
+				let found = await App.findOne({bundle: app.bundle})
 				
-				//console.log({
-					//initial: app,
-					//result: result,
-					//found: found
-				//})
+				console.log({
+					initial: app,
+					result: result,
+					found: found
+				})
 
                 if (result && app) {
                     bot.sendMessage(chatId, `Приложение ${app.name} добавлено/изменено.\nFacebook ID: ${app.facebookId}\nBundle: ${app.bundle}\nOnesignal ID: ${app.onesignalId}\nAppsFlyer Login: ${app.appsflyerLogin}\nAppsFlyer Password: ${app.appsflyerPassword}\nAppsFlyer Dev Key: ${app.appsflyerDevKey}\nMetrica App ID: ${app.metricaAppId}\nMetrica POST Api Key: ${app.metricaPostApiKey}\nMetrica SDK Key: ${app.metricaSdkKey}\nPrivacy Policy URL: ${app.privacyPolicyUrl}\nFacebook Enabled: ${app.facebook}`)
