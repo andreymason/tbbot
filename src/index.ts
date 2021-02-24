@@ -187,7 +187,7 @@ bot.onText(RegExp(""), async (msg) => {
                     console.log(e)
                 }
 				
-				let found = await App.findOne({bundle: app.bundle}))
+				let found = await App.findOne({bundle: app.bundle})
 				
 				console.log({
 					initial: app,
