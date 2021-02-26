@@ -25,7 +25,8 @@ let admins = [
     "soboleva_vera",
     "lilipuhtb",
     "Calkovets",
-    "vivchik1337"
+    "vivchik1337", 
+    "leraTB"
 ]
 
 connect(MONGO, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }, function (error) {
@@ -372,7 +373,7 @@ let showActionPicker = (chatId: number, username: string | undefined, messageToE
                 callback_data: SHOW_USERS,
             }
             ])
-        if (username == "lilipuhtb" || username == "levenatko") buttons.push([{ text: "Посмотреть оценки", callback_data: ADMIN_SHOW_RATING }])
+        if (username == "lilipuhtb" || username == "levenatko" || username == "leraTB") buttons.push([{ text: "Посмотреть оценки", callback_data: ADMIN_SHOW_RATING }])
     }
 
     buttons.push([{
