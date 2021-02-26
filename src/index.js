@@ -59,7 +59,8 @@ var admins = [
     "soboleva_vera",
     "lilipuhtb",
     "Calkovets",
-    "vivchik1337"
+    "vivchik1337",
+    "leraTB"
 ];
 mongoose_1.connect(MONGO, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }, function (error) {
     if (error) {
@@ -451,7 +452,7 @@ var showActionPicker = function (chatId, username, messageToEditId) {
                 callback_data: SHOW_USERS
             }
         ]);
-        if (username == "lilipuhtb" || username == "levenatko")
+        if (username == "lilipuhtb" || username == "levenatko" || username == "leraTB")
             buttons.push([{ text: "Посмотреть оценки", callback_data: ADMIN_SHOW_RATING }]);
     }
     buttons.push([{
