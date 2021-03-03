@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.showAppIsPublishedMessage = exports.showAppsflyerIsBroken = exports.showAppIsBannedMessage = void 0;
-var API_KEY = "1645312068:AAG_DnYL15Aj5n0qupdzSXnwyhcqNK1sc2g";
+var API_KEY = "1645312068:AAEyCko_Aa1Azw87pqZ1QXVLqcQAWURJe6Y";
 var PORT = 4012;
 var MONGO = "mongodb://127.0.0.1:27017/tb";
 //const MONGO = "mongodb://admin:fweifjwoi234sa@127.0.0.1:27017/tb"
