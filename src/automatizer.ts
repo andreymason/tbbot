@@ -284,11 +284,9 @@ export async function checkAppsflyerUnits(app: IApp) {
 
         let result = await appsflyerWebdriver.executeScript(`return document.getElementsByTagName('af-web-component')[0].shadowRoot.innerHTML`) as string
 
-        let regex = /<\/span><span class="af-features-feature-data-value"><span class="af-formatted-number ">(.*?)</g
+        let regex = /Remaining units<\/span><span class="af-features-feature-data-value"><span class="af-formatted-number ">(.*?)</g
 
         let matches = regex.exec(result) || []
-
-        console.log(matches)
 
         let unitsLeft = matches[1]
 
