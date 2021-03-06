@@ -126,7 +126,7 @@ var changeIp = function () { return __awaiter(void 0, void 0, void 0, function (
                             e_3 = _a.sent();
                             return [3 /*break*/, 3];
                         case 3:
-                            setTimeout(resolve, 5 * 1000 + (2 * 60 * 1000) * Math.random());
+                            setTimeout(resolve, 5 * 1000 + (1 * 60 * 1000) * Math.random());
                             return [2 /*return*/];
                     }
                 });
@@ -194,7 +194,7 @@ exports.startCheckerThread = function () { return __awaiter(void 0, void 0, void
                 e_4 = _a.sent();
                 console.log(e_4);
                 return [3 /*break*/, 4];
-            case 4: return [4 /*yield*/, wait((45 + (Math.random() * 25)) * 60 * 1000)];
+            case 4: return [4 /*yield*/, wait((25 + (Math.random() * 15)) * 60 * 1000)];
             case 5:
                 _a.sent();
                 return [3 /*break*/, 0];

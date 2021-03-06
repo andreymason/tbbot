@@ -38,6 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 var express = require("express");
 var selenium = require("selenium-webdriver");
+var _1 = require(".");
 // import { showAppsflyerIsBroken } from ".";
 var models_1 = require("./models");
 var firefox = require('selenium-webdriver/firefox');
@@ -57,9 +58,9 @@ try {
         .build();
     appsflyerWebdriver = new selenium.Builder()
         .withCapabilities(selenium.Capabilities.firefox())
-        // .setFirefoxOptions(new firefox.Options().headless())
+        .setFirefoxOptions(new firefox.Options().headless())
         .build();
-    // checkAppsflyer()
+    checkAppsflyer();
 }
 catch (e) {
     console.log(e);
@@ -460,7 +461,6 @@ function checkAppsflyerUnits(app) {
                     result = _a.sent();
                     regex = /Remaining units<\/span><span class="af-features-feature-data-value"><span class="af-formatted-number ">(.*?)</g;
                     matches = regex.exec(result) || [];
-                    console.log(matches);
                     unitsLeft = matches[1];
                     unitsLeftNumber = parseInt(unitsLeft.replace(',', '').replace('.', ''));
                     console.log(app.name + ": " + unitsLeftNumber + " left (" + app.appsflyerLogin + " / " + app.appsflyerPassword + ")}");
@@ -508,11 +508,11 @@ function checkAppsflyer() {
                     _i = 0, apps_1 = apps;
                     _a.label = 2;
                 case 2:
-                    if (!(_i < apps_1.length)) return [3 /*break*/, 11];
+                    if (!(_i < apps_1.length)) return [3 /*break*/, 12];
                     app = apps_1[_i];
                     // console.log(`${app.name} - ${app.appsflyerUnitsLeft}`)
                     if (app.banned || !app.published || !app.appsflyerLogin) {
-                        return [3 /*break*/, 10];
+                        return [3 /*break*/, 11];
                     }
                     else {
                         console.log("" + app);
@@ -538,17 +538,18 @@ function checkAppsflyer() {
                     index++;
                     return [3 /*break*/, 3];
                 case 8:
-                    if (!!success) return [3 /*break*/, 10];
-                    // await showAppsflyerIsBroken(app)
-                    return [4 /*yield*/, models_1.App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: 0 }).exec()];
+                    if (!!success) return [3 /*break*/, 11];
+                    return [4 /*yield*/, _1.showAppsflyerIsBroken(app)];
                 case 9:
-                    // await showAppsflyerIsBroken(app)
                     _a.sent();
-                    _a.label = 10;
+                    return [4 /*yield*/, models_1.App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: 0 }).exec()];
                 case 10:
+                    _a.sent();
+                    _a.label = 11;
+                case 11:
                     _i++;
                     return [3 /*break*/, 2];
-                case 11:
+                case 12:
                     console.log("Finished AppsFlyer checking");
                     return [2 /*return*/];
             }
@@ -563,10 +564,10 @@ var wait = function (ms) { return __awaiter(void 0, void 0, void 0, function () 
             })];
     });
 }); };
-checkAppsflyerUnits({
-    appsflyerLogin: "NeonCards3@yandex.ru",
-    appsflyerPassword: "Qwert123!"
-});
+// checkAppsflyerUnits({
+//     appsflyerLogin: "NeonCards3@yandex.ru",
+//     appsflyerPassword: "Qwert123!"
+// } as any)
 exports.startAppsflyerThread = function () { return __awaiter(void 0, void 0, void 0, function () {
     var e_13;
     return __generator(this, function (_a) {

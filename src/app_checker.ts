@@ -51,7 +51,7 @@ let changeIp = async () => {
 
 		}
 
-		setTimeout(resolve, 5 * 1000 + (2 * 60 * 1000) * Math.random())
+		setTimeout(resolve, 5 * 1000 + (1 * 60 * 1000) * Math.random())
 	})
 }
 
@@ -104,6 +104,6 @@ export let startCheckerThread = async () => {
 		} catch (e) {
 			console.log(e)
 		}
-		await wait((45 + (Math.random() * 25)) * 60 * 1000)
+		await wait((25 + (Math.random() * 15)) * 60 * 1000)
 	}
 }
