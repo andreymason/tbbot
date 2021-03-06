@@ -36,7 +36,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.showAppIsPublishedMessage = exports.showAppsflyerIsBroken = exports.showAppIsBannedMessage = void 0;
 var API_KEY = "1645312068:AAEyCko_Aa1Azw87pqZ1QXVLqcQAWURJe6Y";
 var PORT = 4012;
 var MONGO = "mongodb://127.0.0.1:27017/tb";
@@ -91,16 +90,17 @@ var bot = new TelegramBot(API_KEY, { polling: true });
 models_1.addUsers("admin", ["andreymason"]);
 bot.on('callback_query', function (callbackQuery) { return __awaiter(void 0, void 0, void 0, function () {
     var data, message, chatId, username, messageId, user, _a, appMatch, match, add, appId, answerMatch, answer, adminMatch, appId, result;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var _b, _c, _d, _e, _f, _g;
+    return __generator(this, function (_h) {
+        switch (_h.label) {
             case 0:
                 data = callbackQuery.data, message = callbackQuery.message;
-                chatId = message === null || message === void 0 ? void 0 : message.chat.id;
-                username = (message === null || message === void 0 ? void 0 : message.chat.username) || "";
-                messageId = message === null || message === void 0 ? void 0 : message.message_id;
+                chatId = (_b = message) === null || _b === void 0 ? void 0 : _b.chat.id;
+                username = ((_c = message) === null || _c === void 0 ? void 0 : _c.chat.username) || "";
+                messageId = (_d = message) === null || _d === void 0 ? void 0 : _d.message_id;
                 return [4 /*yield*/, validateUser(chatId, username)];
             case 1:
-                user = _b.sent();
+                user = _h.sent();
                 if (!user || !chatId || !messageId)
                     return [2 /*return*/];
                 _a = data;
@@ -142,7 +142,7 @@ bot.on('callback_query', function (callbackQuery) { return __awaiter(void 0, voi
                 return [2 /*return*/];
             case 9: return [4 /*yield*/, showRatings(chatId, messageId, username)];
             case 10:
-                _b.sent();
+                _h.sent();
                 return [2 /*return*/];
             case 11:
                 showAppsflyerUnits(chatId, messageId, username);
@@ -151,7 +151,7 @@ bot.on('callback_query', function (callbackQuery) { return __awaiter(void 0, voi
                 showUsers(chatId, username, messageId);
                 return [2 /*return*/];
             case 13:
-                appMatch = data === null || data === void 0 ? void 0 : data.match(/app:(.*)/);
+                appMatch = (_e = data) === null || _e === void 0 ? void 0 : _e.match(/app:(.*)/);
                 if (appMatch) {
                     match = appMatch[1].split(":");
                     add = match[0] === "add";
@@ -159,7 +159,7 @@ bot.on('callback_query', function (callbackQuery) { return __awaiter(void 0, voi
                     showEnterAdIds(appId, chatId, messageId, add);
                     return [2 /*return*/];
                 }
-                answerMatch = data === null || data === void 0 ? void 0 : data.match(/addUser:(.*)/);
+                answerMatch = (_f = data) === null || _f === void 0 ? void 0 : _f.match(/addUser:(.*)/);
                 if (answerMatch) {
                     answer = answerMatch[1];
                     if (answer === "yes") {
@@ -170,12 +170,12 @@ bot.on('callback_query', function (callbackQuery) { return __awaiter(void 0, voi
                     }
                     return [2 /*return*/];
                 }
-                adminMatch = data === null || data === void 0 ? void 0 : data.match(/admin:remove:(.*)/);
+                adminMatch = (_g = data) === null || _g === void 0 ? void 0 : _g.match(/admin:remove:(.*)/);
                 if (!adminMatch) return [3 /*break*/, 15];
                 appId = adminMatch[1];
                 return [4 /*yield*/, models_1.removeApp(appId)];
             case 14:
-                result = _b.sent();
+                result = _h.sent();
                 if (result) {
                     bot.editMessageText("Приложение удалено.", { message_id: messageId, chat_id: chatId });
                 }
@@ -209,61 +209,80 @@ bot.onText(/\/start/, function (msg) { return __awaiter(void 0, void 0, void 0, 
     });
 }); });
 bot.onText(RegExp(""), function (msg) { return __awaiter(void 0, void 0, void 0, function () {
-    var chatId, username, messageId, user, chatStatus, text, result, app_1, ids, add;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var chatId, username, messageId, user, chatStatus, text, result, app_1, _a, e_1, found, ids, add;
+    var _b, _c, _d;
+    return __generator(this, function (_e) {
+        switch (_e.label) {
             case 0:
-                chatId = msg === null || msg === void 0 ? void 0 : msg.chat.id;
-                username = msg === null || msg === void 0 ? void 0 : msg.chat.username;
-                messageId = msg === null || msg === void 0 ? void 0 : msg.message_id;
+                chatId = (_b = msg) === null || _b === void 0 ? void 0 : _b.chat.id;
+                username = (_c = msg) === null || _c === void 0 ? void 0 : _c.chat.username;
+                messageId = (_d = msg) === null || _d === void 0 ? void 0 : _d.message_id;
                 return [4 /*yield*/, validateUser(chatId, username || "")];
             case 1:
-                user = _a.sent();
+                user = _e.sent();
                 if (!user || !chatId || !messageId)
                     return [2 /*return*/];
                 return [4 /*yield*/, models_1.getChatStatusByChatId(chatId)];
             case 2:
-                chatStatus = _a.sent();
-                if (chatStatus) {
-                    text = msg.text;
-                    if (text) {
-                        if (chatStatus.status === models_1.WAITING_FOR_APP_ADD) {
-                            result = void 0;
-                            try {
-                                app_1 = JSON.parse(text);
-                                result = !(app_1.bundle) ? null : models_1.addApp(app_1);
-                            }
-                            catch (e) {
-                                result = null;
-                                console.log(e);
-                            }
-                            if (result && app_1) {
-                                bot.sendMessage(chatId, "\u041F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u0435 " + app_1.name + " \u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u043E/\u0438\u0437\u043C\u0435\u043D\u0435\u043D\u043E.\nFacebook ID: " + app_1.facebookId + "\nBundle: " + app_1.bundle + "\nOnesignal ID: " + app_1.onesignalId + "\nAppsFlyer Login: " + app_1.appsflyerLogin + "\nAppsFlyer Password: " + app_1.appsflyerPassword + "\nAppsFlyer Dev Key: " + app_1.appsflyerDevKey + "\nMetrica App ID: " + app_1.metricaAppId + "\nMetrica POST Api Key: " + app_1.metricaPostApiKey + "\nMetrica SDK Key: " + app_1.metricaSdkKey + "\nPrivacy Policy URL: " + app_1.privacyPolicyUrl + "\nFacebook Enabled: " + app_1.facebook);
-                            }
-                            else {
-                                bot.sendMessage(chatId, "Приложение не добавлено.");
-                            }
-                            if (chatStatus.uploadMessageId) {
-                                bot.deleteMessage(chatId, chatStatus.uploadMessageId.toString());
-                            }
-                            models_1.updateChatStatus(chatId, models_1.IDLE);
-                            showActionPicker(chatId, username);
-                            return [2 /*return*/];
-                        }
-                        ids = text.split("\n");
-                        if (chatStatus.status === models_1.WAITING_FOR_IDS_ADD || chatStatus.status === models_1.WAITING_FOR_IDS_REMOVE) {
-                            add = chatStatus.status === models_1.WAITING_FOR_IDS_ADD;
-                            showIdsUploadMessage(chatId, ids, add, username);
-                        }
-                        else if (chatStatus.status === models_1.WAITING_FOR_USERNAMES && chatStatus.uploadMessageId) {
-                            showUsersUploadMessage(chatId, ids, username);
-                        }
-                        else if (chatStatus.status === models_1.WAITING_FOR_REMOVE_USERNAMES && chatStatus.uploadMessageId) {
-                            showUsersRemoveMessage(chatId, ids, username);
-                        }
-                    }
+                chatStatus = _e.sent();
+                if (!chatStatus) return [3 /*break*/, 11];
+                text = msg.text;
+                if (!text) return [3 /*break*/, 11];
+                if (!(chatStatus.status === models_1.WAITING_FOR_APP_ADD)) return [3 /*break*/, 10];
+                result = void 0;
+                _e.label = 3;
+            case 3:
+                _e.trys.push([3, 7, , 8]);
+                app_1 = JSON.parse(text);
+                if (!!(app_1.bundle)) return [3 /*break*/, 4];
+                _a = null;
+                return [3 /*break*/, 6];
+            case 4: return [4 /*yield*/, models_1.addApp(app_1)];
+            case 5:
+                _a = _e.sent();
+                _e.label = 6;
+            case 6:
+                result = _a;
+                return [3 /*break*/, 8];
+            case 7:
+                e_1 = _e.sent();
+                result = null;
+                console.log(e_1);
+                return [3 /*break*/, 8];
+            case 8: return [4 /*yield*/, models_1.App.findOne({ bundle: app_1.bundle })];
+            case 9:
+                found = _e.sent();
+                console.log({
+                    initial: app_1,
+                    result: result,
+                    found: found
+                });
+                if (result && app_1) {
+                    bot.sendMessage(chatId, "\u041F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u0435 " + app_1.name + " \u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u043E/\u0438\u0437\u043C\u0435\u043D\u0435\u043D\u043E.\nFacebook ID: " + app_1.facebookId + "\nBundle: " + app_1.bundle + "\nOnesignal ID: " + app_1.onesignalId + "\nAppsFlyer Login: " + app_1.appsflyerLogin + "\nAppsFlyer Password: " + app_1.appsflyerPassword + "\nAppsFlyer Dev Key: " + app_1.appsflyerDevKey + "\nMetrica App ID: " + app_1.metricaAppId + "\nMetrica POST Api Key: " + app_1.metricaPostApiKey + "\nMetrica SDK Key: " + app_1.metricaSdkKey + "\nPrivacy Policy URL: " + app_1.privacyPolicyUrl + "\nFacebook Enabled: " + app_1.facebook);
                 }
+                else {
+                    bot.sendMessage(chatId, "Приложение не добавлено.");
+                }
+                if (chatStatus.uploadMessageId) {
+                    bot.deleteMessage(chatId, chatStatus.uploadMessageId.toString());
+                }
+                models_1.updateChatStatus(chatId, models_1.IDLE);
+                showActionPicker(chatId, username);
                 return [2 /*return*/];
+            case 10:
+                ids = text.split("\n");
+                if (chatStatus.status === models_1.WAITING_FOR_IDS_ADD || chatStatus.status === models_1.WAITING_FOR_IDS_REMOVE) {
+                    add = chatStatus.status === models_1.WAITING_FOR_IDS_ADD;
+                    showIdsUploadMessage(chatId, ids, add, username);
+                }
+                else if (chatStatus.status === models_1.WAITING_FOR_USERNAMES && chatStatus.uploadMessageId) {
+                    showUsersUploadMessage(chatId, ids, username);
+                }
+                else if (chatStatus.status === models_1.WAITING_FOR_REMOVE_USERNAMES && chatStatus.uploadMessageId) {
+                    showUsersRemoveMessage(chatId, ids, username);
+                }
+                _e.label = 11;
+            case 11: return [2 /*return*/];
         }
     });
 }); });
@@ -326,7 +345,7 @@ var showEnterRemoveUsersIds = function (chatId, messageId, username) {
     bot.editMessageText('<b>Удаление пользователей из бота.</b>\nВведите айди, каждый с новой строки. Пример:\n@nickname1\n@nickname2', options);
 };
 exports.showAppIsBannedMessage = function (app) { return __awaiter(void 0, void 0, void 0, function () {
-    var options, statuses, _i, statuses_1, status_1, user, e_1;
+    var options, statuses, _i, statuses_1, status_1, user, e_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -354,7 +373,7 @@ exports.showAppIsBannedMessage = function (app) { return __awaiter(void 0, void 
                 _a.sent();
                 return [3 /*break*/, 7];
             case 6:
-                e_1 = _a.sent();
+                e_2 = _a.sent();
                 return [3 /*break*/, 7];
             case 7:
                 _i++;
@@ -364,34 +383,7 @@ exports.showAppIsBannedMessage = function (app) { return __awaiter(void 0, void 
     });
 }); };
 exports.showAppsflyerIsBroken = function (app) { return __awaiter(void 0, void 0, void 0, function () {
-    var options, status_2, e_2;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                options = {
-                    parse_mode: "HTML"
-                };
-                _a.label = 1;
-            case 1:
-                _a.trys.push([1, 5, , 6]);
-                return [4 /*yield*/, models_1.getChatStatusByUsername("bprtsk")];
-            case 2:
-                status_2 = _a.sent();
-                if (!status_2) return [3 /*break*/, 4];
-                return [4 /*yield*/, bot.sendMessage(status_2.chatId, "<b>" + app.name + "</b> \u043F\u043E\u043B\u043E\u043C\u0430\u043D\u0430.\n" + app.appsflyerLogin + "\n" + app.appsflyerPassword, options)];
-            case 3:
-                _a.sent();
-                _a.label = 4;
-            case 4: return [3 /*break*/, 6];
-            case 5:
-                e_2 = _a.sent();
-                return [3 /*break*/, 6];
-            case 6: return [2 /*return*/];
-        }
-    });
-}); };
-exports.showAppIsPublishedMessage = function (app) { return __awaiter(void 0, void 0, void 0, function () {
-    var options, status_3, e_3;
+    var options, status_2, e_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -403,9 +395,9 @@ exports.showAppIsPublishedMessage = function (app) { return __awaiter(void 0, vo
                 _a.trys.push([1, 5, , 6]);
                 return [4 /*yield*/, models_1.getChatStatusByUsername("andreymason")];
             case 2:
-                status_3 = _a.sent();
-                if (!status_3) return [3 /*break*/, 4];
-                return [4 /*yield*/, bot.sendMessage(status_3.chatId, "<b>" + app.name + "</b> \u043E\u043F\u0443\u0431\u043B\u0438\u043A\u043E\u0432\u0430\u043D\u0430 \u0432 Google Play.\nhttps://play.google.com/store/apps/details?id=" + app.bundle, options)];
+                status_2 = _a.sent();
+                if (!status_2) return [3 /*break*/, 4];
+                return [4 /*yield*/, bot.sendMessage(status_2.chatId, "<b>" + app.name + "</b> \u043F\u043E\u043B\u043E\u043C\u0430\u043D\u0430.\n" + app.appsflyerLogin + "\n" + app.appsflyerPassword, options)];
             case 3:
                 _a.sent();
                 _a.label = 4;
@@ -414,6 +406,42 @@ exports.showAppIsPublishedMessage = function (app) { return __awaiter(void 0, vo
                 e_3 = _a.sent();
                 return [3 /*break*/, 6];
             case 6: return [2 /*return*/];
+        }
+    });
+}); };
+exports.showAppIsPublishedMessage = function (app) { return __awaiter(void 0, void 0, void 0, function () {
+    var options, users, _i, users_1, user, status_3, e_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                options = {
+                    parse_mode: "HTML"
+                };
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 7, , 8]);
+                users = ["andreymason", "levenatko"];
+                _i = 0, users_1 = users;
+                _a.label = 2;
+            case 2:
+                if (!(_i < users_1.length)) return [3 /*break*/, 6];
+                user = users_1[_i];
+                return [4 /*yield*/, models_1.getChatStatusByUsername(user)];
+            case 3:
+                status_3 = _a.sent();
+                if (!status_3) return [3 /*break*/, 5];
+                return [4 /*yield*/, bot.sendMessage(status_3.chatId, "<b>" + app.name + "</b> \u043E\u043F\u0443\u0431\u043B\u0438\u043A\u043E\u0432\u0430\u043D\u0430 \u0432 Google Play.\nhttps://play.google.com/store/apps/details?id=" + app.bundle, options)];
+            case 4:
+                _a.sent();
+                _a.label = 5;
+            case 5:
+                _i++;
+                return [3 /*break*/, 2];
+            case 6: return [3 /*break*/, 8];
+            case 7:
+                e_4 = _a.sent();
+                return [3 /*break*/, 8];
+            case 8: return [2 /*return*/];
         }
     });
 }); };
@@ -467,7 +495,7 @@ var showActionPicker = function (chatId, username, messageToEditId) {
     }
 };
 var showIdsUploadMessage = function (chatId, ids, add, username) { return __awaiter(void 0, void 0, void 0, function () {
-    var app, chatStatus, e_4, message, typeText;
+    var app, chatStatus, e_5, message, typeText;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -483,7 +511,7 @@ var showIdsUploadMessage = function (chatId, ids, add, username) { return __awai
                 }
                 return [3 /*break*/, 3];
             case 2:
-                e_4 = _a.sent();
+                e_5 = _a.sent();
                 showActionPicker(chatId, username);
                 return [2 /*return*/];
             case 3:
@@ -508,6 +536,7 @@ var showIdsUploadMessage = function (chatId, ids, add, username) { return __awai
                         ids: ids,
                         type: automatizer_1.EntryType.FACEBOOK_ADD,
                         callback: function (result) {
+                            var _a;
                             if (result) {
                                 if (chatStatus) {
                                     console.log(chatStatus.username + " request has succeed.");
@@ -515,7 +544,7 @@ var showIdsUploadMessage = function (chatId, ids, add, username) { return __awai
                                 var succeed_1 = 0;
                                 result.forEach(function (res) { if (res.success)
                                     succeed_1++; });
-                                bot.editMessageText(succeed_1 + "/" + result.length + " ID  \u0434\u043B\u044F " + (app === null || app === void 0 ? void 0 : app.name) + " \u0443\u0441\u043F\u0435\u0448\u043D\u043E \u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u044B.", { chat_id: chatId, message_id: message.message_id });
+                                bot.editMessageText(succeed_1 + "/" + result.length + " ID  \u0434\u043B\u044F " + ((_a = app) === null || _a === void 0 ? void 0 : _a.name) + " \u0443\u0441\u043F\u0435\u0448\u043D\u043E \u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u044B.", { chat_id: chatId, message_id: message.message_id });
                             }
                             else {
                                 if (chatStatus) {
@@ -536,6 +565,7 @@ var showIdsUploadMessage = function (chatId, ids, add, username) { return __awai
                         ids: ids,
                         type: automatizer_1.EntryType.FACEBOOK_REMOVE,
                         callback: function (result) {
+                            var _a;
                             if (result) {
                                 if (chatStatus) {
                                     console.log(chatStatus.username + " request has succeed.");
@@ -543,7 +573,7 @@ var showIdsUploadMessage = function (chatId, ids, add, username) { return __awai
                                 var succeed_2 = 0;
                                 result.forEach(function (res) { if (res.success)
                                     succeed_2++; });
-                                bot.editMessageText(succeed_2 + "/" + result.length + " ID  \u0434\u043B\u044F " + (app === null || app === void 0 ? void 0 : app.name) + " \u0443\u0441\u043F\u0435\u0448\u043D\u043E \u0443\u0434\u0430\u043B\u0435\u043D\u044B.", { chat_id: chatId, message_id: message.message_id });
+                                bot.editMessageText(succeed_2 + "/" + result.length + " ID  \u0434\u043B\u044F " + ((_a = app) === null || _a === void 0 ? void 0 : _a.name) + " \u0443\u0441\u043F\u0435\u0448\u043D\u043E \u0443\u0434\u0430\u043B\u0435\u043D\u044B.", { chat_id: chatId, message_id: message.message_id });
                             }
                             else {
                                 if (chatStatus) {
@@ -563,7 +593,7 @@ var showIdsUploadMessage = function (chatId, ids, add, username) { return __awai
     });
 }); };
 var showUsersRemoveMessage = function (chatId, ids, username) { return __awaiter(void 0, void 0, void 0, function () {
-    var chatStatus, e_5, usernames;
+    var chatStatus, e_6, usernames;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -573,7 +603,7 @@ var showUsersRemoveMessage = function (chatId, ids, username) { return __awaiter
                 chatStatus = _a.sent();
                 return [3 /*break*/, 3];
             case 2:
-                e_5 = _a.sent();
+                e_6 = _a.sent();
                 showActionPicker(chatId, username);
                 return [2 /*return*/];
             case 3:
@@ -596,7 +626,7 @@ var showUsersRemoveMessage = function (chatId, ids, username) { return __awaiter
     });
 }); };
 var showUsersUploadMessage = function (chatId, ids, username) { return __awaiter(void 0, void 0, void 0, function () {
-    var chatStatus, e_6, usernames;
+    var chatStatus, e_7, usernames;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -606,7 +636,7 @@ var showUsersUploadMessage = function (chatId, ids, username) { return __awaiter
                 chatStatus = _a.sent();
                 return [3 /*break*/, 3];
             case 2:
-                e_6 = _a.sent();
+                e_7 = _a.sent();
                 showActionPicker(chatId, username);
                 return [2 /*return*/];
             case 3:
@@ -630,8 +660,9 @@ var showUsersUploadMessage = function (chatId, ids, username) { return __awaiter
 }); };
 var showEnterAdIds = function (appId, chatId, messageId, add) { return __awaiter(void 0, void 0, void 0, function () {
     var options, app, caption;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
                 options = {
                     chat_id: chatId,
@@ -646,13 +677,13 @@ var showEnterAdIds = function (appId, chatId, messageId, add) { return __awaiter
                 };
                 return [4 /*yield*/, models_1.getApp(appId)];
             case 1:
-                app = _a.sent();
+                app = _b.sent();
                 if (app) {
                     models_1.updateChatStatus(chatId, add ? models_1.WAITING_FOR_IDS_ADD : models_1.WAITING_FOR_IDS_REMOVE);
                     models_1.updateChatApp(chatId, app);
                     models_1.updateChatUploadMessageId(chatId, messageId);
                     caption = add ? "Добавление" : "Удаление";
-                    bot.editMessageText("<b>" + caption + " ID \u0434\u043B\u044F " + (app === null || app === void 0 ? void 0 : app.name) + ".</b>\n\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0430\u0439\u0434\u0438, \u043A\u0430\u0436\u0434\u044B\u0439 \u0441 \u043D\u043E\u0432\u043E\u0439 \u0441\u0442\u0440\u043E\u043A\u0438.  \u041F\u0440\u0438\u043C\u0435\u0440:\n987654321\n123456789", options);
+                    bot.editMessageText("<b>" + caption + " ID \u0434\u043B\u044F " + ((_a = app) === null || _a === void 0 ? void 0 : _a.name) + ".</b>\n\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0430\u0439\u0434\u0438, \u043A\u0430\u0436\u0434\u044B\u0439 \u0441 \u043D\u043E\u0432\u043E\u0439 \u0441\u0442\u0440\u043E\u043A\u0438.  \u041F\u0440\u0438\u043C\u0435\u0440:\n987654321\n123456789", options);
                 }
                 return [2 /*return*/];
         }
@@ -661,7 +692,7 @@ var showEnterAdIds = function (appId, chatId, messageId, add) { return __awaiter
 var showAppsPicker = function (chatId, add, messageToEditId) {
     if (messageToEditId === void 0) { messageToEditId = null; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var inlineButtons, row, _i, _a, app_3, caption, e_7;
+        var inlineButtons, row, _i, _a, app_3, caption, e_8;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -713,8 +744,8 @@ var showAppsPicker = function (chatId, add, messageToEditId) {
                     _b.label = 9;
                 case 9: return [3 /*break*/, 11];
                 case 10:
-                    e_7 = _b.sent();
-                    console.log(e_7);
+                    e_8 = _b.sent();
+                    console.log(e_8);
                     console.log(row);
                     return [3 /*break*/, 11];
                 case 11: return [2 /*return*/];
@@ -725,7 +756,7 @@ var showAppsPicker = function (chatId, add, messageToEditId) {
 var showUsers = function (chatId, username, messageToEditId) {
     if (messageToEditId === void 0) { messageToEditId = null; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var caption, e_8;
+        var caption, e_9;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, models_1.getUsersData()];
@@ -745,7 +776,7 @@ var showUsers = function (chatId, username, messageToEditId) {
                     _a.label = 6;
                 case 6: return [3 /*break*/, 8];
                 case 7:
-                    e_8 = _a.sent();
+                    e_9 = _a.sent();
                     return [3 /*break*/, 8];
                 case 8:
                     showActionPicker(chatId, username);

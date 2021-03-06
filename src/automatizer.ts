@@ -1,6 +1,7 @@
 import * as express from "express";
 import * as selenium from 'selenium-webdriver';
 import { showAppsflyerIsBroken } from ".";
+// import { showAppsflyerIsBroken } from ".";
 import { App, IApp } from './models';
 const firefox = require('selenium-webdriver/firefox');
 const router = express.Router()
@@ -280,13 +281,16 @@ export async function checkAppsflyerUnits(app: IApp) {
     await appsflyerWebdriver.sleep(4000)
 
     try {
-        await appsflyerWebdriver.wait(() => {
-            return selenium.until.elementLocated(selenium.By.xpath(`//span[contains(@class,'af-formatted-number')]`))
-        })
 
-        let unitsLeft = await appsflyerWebdriver.findElement(selenium.By.xpath(`(//span[contains(@class,'af-formatted-number')])[2]`))
+        let result = await appsflyerWebdriver.executeScript(`return document.getElementsByTagName('af-web-component')[0].shadowRoot.innerHTML`) as string
 
-        let unitsLeftNumber = parseInt((await unitsLeft.getText()).replace(',', '').replace('.', ''))
+        let regex = /Remaining units<\/span><span class="af-features-feature-data-value"><span class="af-formatted-number ">(.*?)</g
+
+        let matches = regex.exec(result) || []
+
+        let unitsLeft = matches[1]
+
+        let unitsLeftNumber = parseInt(unitsLeft.replace(',', '').replace('.', ''))
 
         console.log(`${app.name}: ${unitsLeftNumber} left (${app.appsflyerLogin} / ${app.appsflyerPassword})}`)
 
@@ -370,6 +374,11 @@ let wait = async (ms: number) => {
         setTimeout(resolve, ms)
     })
 }
+
+// checkAppsflyerUnits({
+//     appsflyerLogin: "NeonCards3@yandex.ru",
+//     appsflyerPassword: "Qwert123!"
+// } as any)
 
 export let startAppsflyerThread = async () => {
     while (true) {
