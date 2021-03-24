@@ -284,6 +284,10 @@ export async function checkAppsflyerUnits(app: IApp) {
 
         let result = await appsflyerWebdriver.executeScript(`return document.getElementsByTagName('af-web-component')[0].shadowRoot.innerHTML`) as string
 
+        let plan = /<div class="af-layout-header-title test__layout-title"><span class="title">(.*?)<\/span><\/div>/
+
+        let planType = plan.exec(result) || []
+        
         let regex = /Remaining units<\/span><span class="af-features-feature-data-value"><span class="af-formatted-number ">(.*?)</g
 
         let matches = regex.exec(result) || []
@@ -292,7 +296,7 @@ export async function checkAppsflyerUnits(app: IApp) {
 
         let unitsLeftNumber = parseInt(unitsLeft.replace(',', '').replace('.', ''))
 
-        console.log(`${app.name}: ${unitsLeftNumber} left (${app.appsflyerLogin} / ${app.appsflyerPassword})}`)
+        console.log(`${app.name}: ${unitsLeftNumber} left (${app.appsflyerLogin} / ${app.appsflyerPassword})} plan type: ${planType}`)
 
         await App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: unitsLeftNumber }).exec()
     } catch (e) {   
