@@ -302,7 +302,7 @@ export async function checkAppsflyerUnits(app: IApp) {
 
 
         let res = await appsflyerWebdriver.get("https://integr-testing.site/tb/appsChecker/index.php?bundle=" + app.bundle)
-        let textOfResult = await appsflyerWebdriver.findElement(selenium.By.id('plan')) as string
+        let textOfResult = await appsflyerWebdriver.findElement(selenium.By.id('plan'))
         console.log(`${textOfResult}`)
 
         await App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: unitsLeftNumber }).exec()
