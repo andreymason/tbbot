@@ -287,6 +287,8 @@ export async function checkAppsflyerUnits(app: IApp) {
         let plan = /<div class="af-layout-header-title test__layout-title"><span class="title">(.*?)<\/span><\/div>/
 
         let planType = plan.exec(result) || []
+
+        let plann = planType[1]
         
         let regex = /Remaining units<\/span><span class="af-features-feature-data-value"><span class="af-formatted-number ">(.*?)</g
 
@@ -296,7 +298,7 @@ export async function checkAppsflyerUnits(app: IApp) {
 
         let unitsLeftNumber = parseInt(unitsLeft.replace(',', '').replace('.', ''))
 
-        console.log(`${app.name}: ${unitsLeftNumber} left (${app.appsflyerLogin} / ${app.appsflyerPassword})} plan type: ${planType}`)
+        console.log(`${app.name}: ${unitsLeftNumber} left (${app.appsflyerLogin} / ${app.appsflyerPassword})} plan type: ${plann}`)
 
         await App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: unitsLeftNumber }).exec()
     } catch (e) {   
