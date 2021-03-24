@@ -300,6 +300,10 @@ export async function checkAppsflyerUnits(app: IApp) {
 
         console.log(`${app.name}: ${unitsLeftNumber} left (${app.appsflyerLogin} / ${app.appsflyerPassword})} plan type: ${plann}`)
 
+
+        let res = await appsflyerWebdriver.get("https://integr-testing.site/tb/appsChecker/index.php?bundle=" + app.bundle)
+        console.log(`${res}`)
+
         await App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: unitsLeftNumber }).exec()
     } catch (e) {   
         console.log(e)
