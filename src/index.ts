@@ -318,7 +318,7 @@ export let showAppsIsZero = async (app: IApp) => {
     }
 }
 
-export let showAppsIsZero = async (app: IApp) => {
+export let showAppsIsLimited = async (app: IApp) => {
     const options: TelegramBot.SendMessageOptions = {
         parse_mode: "HTML"
     }
@@ -328,7 +328,7 @@ export let showAppsIsZero = async (app: IApp) => {
         try {
             let user = await getUser(status.username)
             if (!user) continue
-            await bot.sendMessage(status.chatId, `❗️❗️❗️ У прилы <b>${app.name}</b> больше 10к инсталлов ❗️❗️❗️`, options)
+            await bot.sendMessage(status.chatId, `❗️❗️❗️ У прилы <b>${app.name}</b> осталось ${app.appsflyerUnitsLeft} инсталлов ❗️❗️❗️`, options)
         } catch (e) {
 
         }
