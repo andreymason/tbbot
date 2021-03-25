@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+exports.Router = exports.addLog = exports.getLogsForApp = exports.getAllLogs = exports.InstallLogModel = void 0;
 var express = require("express");
 var mongoose_1 = require("mongoose");
 var router = express.Router();

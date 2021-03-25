@@ -47,6 +47,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+exports.updateChatApp = exports.updateChatUploadMessageId = exports.updateChatStatus = exports.getChatStatusByUsername = exports.getChatStatusByChatId = exports.createChatStatus = exports.validApp = exports.allStatuses = exports.getUser = exports.removeApp = exports.updateApp = exports.reformatDb = exports.addApp = exports.getApp = exports.getApps = exports.updateAppRating = exports.markAppAsPublished = exports.markAppAsBanned = exports.removeUsers = exports.addUsers = exports.App = exports.getUsersData = exports.ChatStatusModel = exports.OSGroupModel = exports.OSSegmentModel = exports.WAITING_FOR_REMOVE_USERNAMES = exports.WAITING_FOR_APP_ADD = exports.WAITING_FOR_IDS_REMOVE = exports.WAITING_FOR_IDS_ADD = exports.PROCESSING_IDS = exports.WAITING_FOR_USERNAMES = exports.IDLE = void 0;
 var mongoose_1 = require("mongoose");
 exports.IDLE = 0;
 exports.WAITING_FOR_USERNAMES = 2;
