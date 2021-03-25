@@ -318,6 +318,23 @@ export let showAppsIsZero = async (app: IApp) => {
     }
 }
 
+export let showAppsIsZero = async (app: IApp) => {
+    const options: TelegramBot.SendMessageOptions = {
+        parse_mode: "HTML"
+    }
+
+    let statuses = await allStatuses()
+    for (let status of statuses) {
+        try {
+            let user = await getUser(status.username)
+            if (!user) continue
+            await bot.sendMessage(status.chatId, `❗️❗️❗️ У прилы <b>${app.name}</b> больше 10к инсталлов ❗️❗️❗️`, options)
+        } catch (e) {
+
+        }
+    }
+}
+
 export let showAppsflyerIsBroken = async (app: IApp) => {
     const options: TelegramBot.SendMessageOptions = {
         parse_mode: "HTML"
