@@ -291,11 +291,6 @@ export async function checkAppsflyerUnits(app: IApp) {
         let planType = plan.exec(result) || []
 
         let plann = planType[1]
-
-        if(app.appsflyerUnitsLeft >= 10000) {
-            await showAppsIsLimited(app)
-        }
-
         if(plann == "Zero Plan" && app.appsStatus) {
             let res = await appsflyerWebdriver.get("https://integr-testing.site/tb/appsChecker/index.php?bundle=" + app.bundle)
             
@@ -306,6 +301,9 @@ export async function checkAppsflyerUnits(app: IApp) {
             console.log(`${textOfResult}`)
 
             await showAppsIsZero(app)
+        }
+        if(app.appsflyerUnitsLeft <= 2000 && app.appsStatus) {
+            await showAppsIsLimited(app)
         }
         
         let regex = /Remaining units<\/span><span class="af-features-feature-data-value"><span class="af-formatted-number ">(.*?)</g
