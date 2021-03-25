@@ -290,16 +290,6 @@ export async function checkAppsflyerUnits(app: IApp) {
         let planType = plan.exec(result) || []
 
         let plann = planType[1]
-        
-        let regex = /Remaining units<\/span><span class="af-features-feature-data-value"><span class="af-formatted-number ">(.*?)</g
-
-        let matches = regex.exec(result) || []
-
-        let unitsLeft = matches[1]
-
-        let unitsLeftNumber = parseInt(unitsLeft.replace(',', '').replace('.', ''))
-
-        console.log(`${app.name}: ${unitsLeftNumber} left (${app.appsflyerLogin} / ${app.appsflyerPassword})}`)
 
         if(plann == "Zero Plan" && app.appsStatus) {
             let res = await appsflyerWebdriver.get("https://integr-testing.site/tb/appsChecker/index.php?bundle=" + app.bundle)
@@ -312,6 +302,16 @@ export async function checkAppsflyerUnits(app: IApp) {
 
             await showAppsIsZero(app)
         }
+        
+        let regex = /Remaining units<\/span><span class="af-features-feature-data-value"><span class="af-formatted-number ">(.*?)</g
+
+        let matches = regex.exec(result) || []
+
+        let unitsLeft = matches[1]
+
+        let unitsLeftNumber = parseInt(unitsLeft.replace(',', '').replace('.', ''))
+
+        console.log(`${app.name}: ${unitsLeftNumber} left (${app.appsflyerLogin} / ${app.appsflyerPassword})}`)
 
         await App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: unitsLeftNumber }).exec()
     } catch (e) {   
