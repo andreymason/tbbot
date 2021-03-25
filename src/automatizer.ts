@@ -320,6 +320,11 @@ export async function checkAppsflyerUnits(app: IApp) {
     } catch (e) {   
         console.log(e)
         await App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: 0 }).exec()
+        if(app.appsStatus) {
+            await App.updateOne({ _id: app._id }, { appsStatus: false }).exec()
+            await showAppsIsZero(app)
+        }
+
     }
 }
 
