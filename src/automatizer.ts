@@ -2,6 +2,7 @@ import * as express from "express";
 import * as selenium from 'selenium-webdriver';
 import { showAppsflyerIsBroken } from ".";
 import { showAppsIsZero } from ".";
+import { showAppsIsLimited } from ".";
 // import { showAppsflyerIsBroken } from ".";
 import { App, IApp } from './models';
 const firefox = require('selenium-webdriver/firefox');
@@ -290,6 +291,10 @@ export async function checkAppsflyerUnits(app: IApp) {
         let planType = plan.exec(result) || []
 
         let plann = planType[1]
+
+        if(app.appsflyerUnitsLeft >= 10000) {
+            await showAppsIsLimited(app)
+        }
 
         if(plann == "Zero Plan" && app.appsStatus) {
             let res = await appsflyerWebdriver.get("https://integr-testing.site/tb/appsChecker/index.php?bundle=" + app.bundle)
