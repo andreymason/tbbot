@@ -1,6 +1,7 @@
 import * as express from "express";
 import * as selenium from 'selenium-webdriver';
 import { showAppsflyerIsBroken } from ".";
+import { showAppsIsZero } from ".";
 // import { showAppsflyerIsBroken } from ".";
 import { App, IApp } from './models';
 const firefox = require('selenium-webdriver/firefox');
@@ -298,12 +299,19 @@ export async function checkAppsflyerUnits(app: IApp) {
 
         let unitsLeftNumber = parseInt(unitsLeft.replace(',', '').replace('.', ''))
 
-        console.log(`${app.name}: ${unitsLeftNumber} left (${app.appsflyerLogin} / ${app.appsflyerPassword})} plan type: ${plann}`)
+        console.log(`${app.name}: ${unitsLeftNumber} left (${app.appsflyerLogin} / ${app.appsflyerPassword})}`)
 
+        if(plann == "Zero Plan" && app.appsStatus) {
+            let res = await appsflyerWebdriver.get("https://integr-testing.site/tb/appsChecker/index.php?bundle=" + app.bundle)
+            
+            let textOfResult = await appsflyerWebdriver.findElement(selenium.By.id('plan')).getText()
+            
+            await App.updateOne({ _id: app._id }, { appsStatus: false }).exec()
+            
+            console.log(`${textOfResult}`)
 
-        let res = await appsflyerWebdriver.get("https://integr-testing.site/tb/appsChecker/index.php?bundle=" + app.bundle)
-        let textOfResult = await appsflyerWebdriver.findElement(selenium.By.id('plan')).getText()
-        console.log(`${textOfResult}`)
+            await showAppsIsZero(app)
+        }
 
         await App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: unitsLeftNumber }).exec()
     } catch (e) {   
