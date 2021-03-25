@@ -302,9 +302,6 @@ export async function checkAppsflyerUnits(app: IApp) {
 
             await showAppsIsZero(app)
         }
-        if(app.appsflyerUnitsLeft <= 2000 && app.appsStatus) {
-            await showAppsIsLimited(app)
-        }
         
         let regex = /Remaining units<\/span><span class="af-features-feature-data-value"><span class="af-formatted-number ">(.*?)</g
 
@@ -317,6 +314,10 @@ export async function checkAppsflyerUnits(app: IApp) {
         console.log(`${app.name}: ${unitsLeftNumber} left (${app.appsflyerLogin} / ${app.appsflyerPassword})}`)
 
         await App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: unitsLeftNumber }).exec()
+
+        if(app.appsflyerUnitsLeft <= 2000 && app.appsStatus) {
+            await showAppsIsLimited(app)
+        }
     } catch (e) {   
         console.log(e)
         await App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: 0 }).exec()
