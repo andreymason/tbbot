@@ -84,7 +84,8 @@ export interface IApp extends Document {
     group: IOSGroup | string | null
 
     removed: boolean,
-    facebook: boolean
+    facebook: boolean,
+    appsStatus: boolean
 }
 
 export interface IUser extends Document {
@@ -151,6 +152,10 @@ const AppSchema = new Schema({
     },
     facebook: {
         type: Boolean,
+        default: true
+    },
+    appsStatus: {
+        type: Boolean, 
         default: true
     }
 })
