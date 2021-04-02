@@ -85,7 +85,9 @@ export interface IApp extends Document {
 
     removed: boolean,
     facebook: boolean,
-    appsStatus: boolean
+    appsStatus: boolean,
+    facebookPass: string,
+    facebookLog: string
 }
 
 export interface IUser extends Document {
@@ -157,7 +159,9 @@ const AppSchema = new Schema({
     appsStatus: {
         type: Boolean, 
         default: true
-    }
+    }, 
+    facebookPass: String, 
+    facebookLog: String
 })
 
 export const getUsersData = async () => {
