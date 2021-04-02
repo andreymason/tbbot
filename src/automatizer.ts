@@ -90,13 +90,11 @@ export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0
 
     await facebookWebdriver.get("https://developers.facebook.com/apps/")
 
-    try {
-        await facebookWebdriver.wait(() => {
-            return selenium.until.elementLocated(selenium.By.xpath(`//button[@data-cookiebanner='accept_button']`))
-        })
+    await facebookWebdriver.wait(() => {
+        return selenium.until.elementLocated(selenium.By.xpath(`//button[@data-cookiebanner='accept_button']`))
+    })
 
-        await (await facebookWebdriver.findElement(selenium.By.xpath(`//button[@data-cookiebanner='accept_button']`))).click()
-    } catch (e) { }
+    await (await facebookWebdriver.findElement(selenium.By.xpath(`//button[@data-cookiebanner='accept_button']`))).click()
 
     if(entry.app.facebookPass === "") {
         await facebookWebdriver.findElement(selenium.By.name('email')).sendKeys(FACEBOOK_USERNAME);
