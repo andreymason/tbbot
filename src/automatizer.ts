@@ -8,8 +8,8 @@ import { App, IApp } from './models';
 const firefox = require('selenium-webdriver/firefox');
 const router = express.Router()
 
-let FACEBOOK_USERNAME = "pazyukrus84@gmail.com"
-let FACEBOOK_PASSWORD = "ABaKaNaNa20"
+const FACEBOOK_USERNAME = "pazyukrus84@gmail.com"
+const FACEBOOK_PASSWORD = "ABaKaNaNa20"
 
 let fbIsReady = false
 
@@ -88,23 +88,32 @@ function checkQueue() {
 
 export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0) {
 
+    let facebookWebdriver2 = new selenium.Builder()
+        .withCapabilities(selenium.Capabilities.firefox())
+        .setFirefoxOptions(new firefox.Options().headless())
+        .build()
+
+    await facebookWebdriver2.get("https://developers.facebook.com/apps/")
+
+    try {
+        await facebookWebdriver2.wait(() => {
+            return selenium.until.elementLocated(selenium.By.xpath(`//button[@data-cookiebanner='accept_button']`))
+        })
+
+        await (await facebookWebdriver2.findElement(selenium.By.xpath(`//button[@data-cookiebanner='accept_button']`))).click()
+    } catch (e) { }
+
+    await facebookWebdriver2.findElement(selenium.By.name('email')).sendKeys(entry.app.facebookLog);
+    await facebookWebdriver2.findElement(selenium.By.name('pass')).sendKeys(entry.app.facebookPass);
+    await facebookWebdriver2.findElement(selenium.By.name('login')).click()
+
+    fbIsReady = true
     checkQueue()
-    
-    if(entry.app.facebookPass != "0" && entry.app.facebookLog != "0") {
-        FACEBOOK_PASSWORD = entry.app.facebookPass
-        FACEBOOK_USERNAME = entry.app.facebookLog
-    }
-    else {
-        FACEBOOK_USERNAME = "pazyukrus84@gmail.com"
-        FACEBOOK_PASSWORD = "ABaKaNaNa20"
-    }
-    
-    await initFacebook().then(() => console.log("Selenium initialized successfully."), (e) => console.log(e))
 
     processing = true
 
     try {
-        await facebookWebdriver.get(`https://developers.facebook.com/apps/${entry.app.facebookId}/settings/advanced/`)
+        await facebookWebdriver2.get(`https://developers.facebook.com/apps/${entry.app.facebookId}/settings/advanced/`)
     }
     catch (e) {
         processing = false
@@ -116,7 +125,7 @@ export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0
     let parentDiv = null
     let input = null
     try {
-        parentDiv = await facebookWebdriver.findElement(selenium.By.id('advertiser_account_ids'))
+        parentDiv = await facebookWebdriver2.findElement(selenium.By.id('advertiser_account_ids'))
         input = await parentDiv.findElement(selenium.By.css(`div>div>div>span>label>input`))
     } catch (e) {
         processing = false
@@ -141,22 +150,22 @@ export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0
                 }
 
                 await input.sendKeys(accountId)
-                await facebookWebdriver.wait(() => {
+                await facebookWebdriver2.wait(() => {
                     return selenium.until.elementLocated(selenium.By.xpath(`//span[text()[contains(., '${accountId}')]]`))
                 })
 
-                await facebookWebdriver.sleep(600)
+                await facebookWebdriver2.sleep(600)
                 await input.sendKeys(selenium.Key.ENTER)
 
-                await facebookWebdriver.wait(() => {
+                await facebookWebdriver2.wait(() => {
                     return selenium.until.elementLocated(selenium.By.xpath(`//span[@title='${accountId}']`))
                 })
 
                 result.push({ id: accountId, success: true })
-                await facebookWebdriver.sleep(300)
+                await facebookWebdriver2.sleep(300)
             }
 
-        await (await facebookWebdriver.findElement(selenium.By.name(`save_changes`))).click()
+        await (await facebookWebdriver2.findElement(selenium.By.name(`save_changes`))).click()
     } catch (e) {
         console.log(e)
         if (tries >= 3) {
