@@ -8,8 +8,8 @@ import { App, IApp } from './models';
 const firefox = require('selenium-webdriver/firefox');
 const router = express.Router()
 
-const FACEBOOK_USERNAME = "pazyukrus84@gmail.com"
-const FACEBOOK_PASSWORD = "ABaKaNaNa20"
+let FACEBOOK_USERNAME = "pazyukrus84@gmail.com"
+let FACEBOOK_PASSWORD = "ABaKaNaNa20"
 
 let fbIsReady = false
 
@@ -88,10 +88,16 @@ function checkQueue() {
 
 export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0) {
     
-    //FACEBOOK_PASSWORD = entry.app.facebookPass
-    //FACEBOOK_USERNAME = entry.app.facebookLog
-
-    //initFacebook().then(() => console.log("Selenium initialized successfully."), (e) => console.log(e))
+    if(entry.app.facebookPass != "0" && entry.app.facebookLog != "0") {
+        FACEBOOK_PASSWORD = entry.app.facebookPass
+        FACEBOOK_USERNAME = entry.app.facebookLog
+    }
+    else {
+        FACEBOOK_USERNAME = "pazyukrus84@gmail.com"
+        FACEBOOK_PASSWORD = "ABaKaNaNa20"
+    }
+    
+    initFacebook().then(() => console.log("Selenium initialized successfully."), (e) => console.log(e))
 
     processing = true
 

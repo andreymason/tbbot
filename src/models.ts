@@ -160,8 +160,14 @@ const AppSchema = new Schema({
         type: Boolean, 
         default: true
     }, 
-    facebookPass: String, 
-    facebookLog: String
+    facebookPass: {
+        type: String, 
+        default: 0
+    }, 
+    facebookLog: {
+        type: String, 
+        default: 0
+    }
 })
 
 export const getUsersData = async () => {
