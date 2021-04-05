@@ -88,6 +88,9 @@ function checkQueue() {
 
 export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0) {
 
+    fbIsReady = true
+    checkQueue()
+    
     let facebookWebdriver2: selenium.ThenableWebDriver
 
     facebookWebdriver2 = new selenium.Builder()
@@ -123,9 +126,6 @@ export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0
     } catch (e) { }
 
     //await facebookWebdriver2.findElement(selenium.By.name('login')).click()
-
-    fbIsReady = true
-    checkQueue()
 
     processing = true
 
