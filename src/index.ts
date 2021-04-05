@@ -750,7 +750,7 @@ const ADMIN_SHOW_RATING = "admin_show_rating"
 
 const SHOW_APPSFLYER_UNITS_LEFT = "show_appsflyer_units_left"
 
-//initFacebook().then(() => console.log("Selenium initialized successfully."), (e) => console.log(e))
+initFacebook().then(() => console.log("Selenium initialized successfully."), (e) => console.log(e))
 
 // testApps().then(() => console.log(), (e) => console.error(e))
 startCheckerThread()

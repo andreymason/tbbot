@@ -11,7 +11,7 @@ const router = express.Router()
 let FACEBOOK_USERNAME = "pazyukrus84@gmail.com"
 let FACEBOOK_PASSWORD = "ABaKaNaNa20"
 
-let fbIsReady = true
+let fbIsReady = false
 
 let processing = false
 
@@ -88,18 +88,18 @@ function checkQueue() {
 
 export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0) {
 
-    checkQueue()
+    //checkQueue()
     
-    if(entry.app.facebookPass != "0" && entry.app.facebookLog != "0") {
-        FACEBOOK_PASSWORD = entry.app.facebookPass
-        FACEBOOK_USERNAME = entry.app.facebookLog
-    }
-    else {
-        FACEBOOK_USERNAME = "pazyukrus84@gmail.com"
-        FACEBOOK_PASSWORD = "ABaKaNaNa20"
-    }
+    //if(entry.app.facebookPass != "0" && entry.app.facebookLog != "0") {
+    //    FACEBOOK_PASSWORD = entry.app.facebookPass
+    //    FACEBOOK_USERNAME = entry.app.facebookLog
+    //}
+    //else {
+    //    FACEBOOK_USERNAME = "pazyukrus84@gmail.com"
+    //    FACEBOOK_PASSWORD = "ABaKaNaNa20"
+    //}
     
-    await initFacebook().then(() => console.log("Selenium initialized successfully."), (e) => console.log(e))
+    //await initFacebook().then(() => console.log("Selenium initialized successfully."), (e) => console.log(e))
 
     processing = true
 
