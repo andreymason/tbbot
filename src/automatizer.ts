@@ -97,7 +97,7 @@ export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0
         FACEBOOK_PASSWORD = "ABaKaNaNa20"
     }
     
-    initFacebook().then(() => console.log("Selenium initialized successfully."), (e) => console.log(e))
+    await initFacebook().then(() => console.log("Selenium initialized successfully."), (e) => console.log(e))
 
     processing = true
 
