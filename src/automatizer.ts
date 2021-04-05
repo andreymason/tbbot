@@ -8,8 +8,8 @@ import { App, IApp } from './models';
 const firefox = require('selenium-webdriver/firefox');
 const router = express.Router()
 
-let FACEBOOK_USERNAME = "pazyukrus84@gmail.com"
-let FACEBOOK_PASSWORD = "ABaKaNaNa20"
+const FACEBOOK_USERNAME = "pazyukrus84@gmail.com"
+const FACEBOOK_PASSWORD = "ABaKaNaNa20"
 
 let fbIsReady = false
 
