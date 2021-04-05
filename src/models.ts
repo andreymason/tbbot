@@ -162,11 +162,11 @@ const AppSchema = new Schema({
     }, 
     facebookPass: {
         type: String, 
-        default: 0
+        default: "ABaKaNaNa20"
     }, 
     facebookLog: {
         type: String, 
-        default: 0
+        default: "pazyukrus84@gmail.com"
     }
 })
 
