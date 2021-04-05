@@ -268,6 +268,10 @@ export async function initFacebook() {
         await (await facebookWebdriver.findElement(selenium.By.xpath(`//a[starts-with(@href, 'https://www.facebook.com/logout.php')]`))).click()
     } catch (e) { }
 
+    let logout = await facebookWebdriver.findElement(selenium.By.xpath(`//a[starts-with(@href, 'https://www.facebook.com/logout.php')]`))
+
+    console.log(logout)
+
     await facebookWebdriver.get("https://developers.facebook.com/apps/")
 
     try {
