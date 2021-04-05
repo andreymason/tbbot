@@ -88,7 +88,9 @@ function checkQueue() {
 
 export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0) {
 
-    let facebookWebdriver2 = new selenium.Builder()
+    let facebookWebdriver2: selenium.ThenableWebDriver
+
+    facebookWebdriver2 = new selenium.Builder()
         .withCapabilities(selenium.Capabilities.firefox())
         .setFirefoxOptions(new firefox.Options().headless())
         .build()
