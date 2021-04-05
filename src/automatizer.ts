@@ -88,9 +88,6 @@ function checkQueue() {
 
 export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0) {
 
-    fbIsReady = true
-    checkQueue()
-    
     let facebookWebdriver2: selenium.ThenableWebDriver
 
     facebookWebdriver2 = new selenium.Builder()
@@ -108,24 +105,13 @@ export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0
         await (await facebookWebdriver2.findElement(selenium.By.xpath(`//button[@data-cookiebanner='accept_button']`))).click()
     } catch (e) { }
 
-    if(entry.app.facebookLog != "0" && entry.app.facebookPass != "0") {
-        await facebookWebdriver2.findElement(selenium.By.name('email')).sendKeys(entry.app.facebookLog);
-        await facebookWebdriver2.findElement(selenium.By.name('pass')).sendKeys(entry.app.facebookPass);
-    }
-    else {
-        await facebookWebdriver2.findElement(selenium.By.name('email')).sendKeys(FACEBOOK_USERNAME);
-        await facebookWebdriver2.findElement(selenium.By.name('pass')).sendKeys(FACEBOOK_PASSWORD);
-    }
+    await facebookWebdriver2.findElement(selenium.By.name('email')).sendKeys(entry.app.facebookLog);
+    await facebookWebdriver2.findElement(selenium.By.name('pass')).sendKeys(entry.app.facebookPass);
 
-    try {
-        await facebookWebdriver2.wait(() => {
-            return selenium.until.elementLocated(selenium.By.name('login'))
-        })
+    await facebookWebdriver2.findElement(selenium.By.name('login')).click()
 
-        await (await facebookWebdriver2.findElement(selenium.By.name('login'))).click()
-    } catch (e) { }
-
-    //await facebookWebdriver2.findElement(selenium.By.name('login')).click()
+    fbIsReady = true
+    checkQueue()
 
     processing = true
 
