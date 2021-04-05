@@ -88,15 +88,11 @@ function checkQueue() {
 
 export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0) {
 
-    try {
-        facebookWebdriver = new selenium.Builder()
-            .withCapabilities(selenium.Capabilities.firefox())
-            .setFirefoxOptions(new firefox.Options().headless())
-            .build()
-    } catch (e) {
-        console.log(e)
-    }
-
+    facebookWebdriver = new selenium.Builder()
+        .withCapabilities(selenium.Capabilities.firefox())
+        .setFirefoxOptions(new firefox.Options().headless())
+        .build()
+   
     await facebookWebdriver.get("https://developers.facebook.com/apps/")
 
     try {
@@ -113,6 +109,8 @@ export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0
     console.log(facebookWebdriver.getTitle())
     
     await facebookWebdriver.findElement(selenium.By.name('login')).click()
+
+    await facebookWebdriver.sleep(600)
 
     fbIsReady = true
     checkQueue()
@@ -304,8 +302,6 @@ export async function initFacebook() {
     await facebookWebdriver.findElement(selenium.By.name('email')).sendKeys(FACEBOOK_USERNAME);
     await facebookWebdriver.findElement(selenium.By.name('pass')).sendKeys(FACEBOOK_PASSWORD);
     await facebookWebdriver.findElement(selenium.By.name('login')).click()
-
-    await facebookWebdriver.quit()
 
     fbIsReady = true
     checkQueue()
