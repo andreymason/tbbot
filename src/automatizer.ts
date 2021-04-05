@@ -91,7 +91,7 @@ export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0
     FACEBOOK_PASSWORD = entry.app.facebookPass
     FACEBOOK_USERNAME = entry.app.facebookLog
 
-    await initFacebook()
+    await initFacebook().then(() => console.log("Selenium initialized successfully."), (e) => console.log(e))
 
     processing = true
 
@@ -259,18 +259,6 @@ export async function clearAdAccounts(entry: FacebookQueueEntry, tries: number =
 }
 
 export async function initFacebook() {
-
-    try {
-        await facebookWebdriver.wait(() => {
-            return selenium.until.elementLocated(selenium.By.xpath(`//a[starts-with(@href, 'https://www.facebook.com/logout.php')]`))
-        })
-
-        await (await facebookWebdriver.findElement(selenium.By.xpath(`//a[starts-with(@href, 'https://www.facebook.com/logout.php')]`))).click()
-    } catch (e) { }
-
-    let logout = await facebookWebdriver.findElement(selenium.By.xpath(`//a[starts-with(@href, 'https://www.facebook.com/logout.php')]`))
-
-    console.log(logout)
 
     await facebookWebdriver.get("https://developers.facebook.com/apps/")
 
