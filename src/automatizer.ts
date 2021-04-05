@@ -8,8 +8,8 @@ import { App, IApp } from './models';
 const firefox = require('selenium-webdriver/firefox');
 const router = express.Router()
 
-const FACEBOOK_USERNAME = "pazyukrus84@gmail.com"
-const FACEBOOK_PASSWORD = "ABaKaNaNa20"
+let FACEBOOK_USERNAME = "pazyukrus84@gmail.com"
+let FACEBOOK_PASSWORD = "ABaKaNaNa20"
 
 let fbIsReady = false
 
@@ -88,18 +88,18 @@ function checkQueue() {
 
 export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0) {
 
-    //checkQueue()
+    checkQueue()
     
-    //if(entry.app.facebookPass != "0" && entry.app.facebookLog != "0") {
-    //    FACEBOOK_PASSWORD = entry.app.facebookPass
-    //    FACEBOOK_USERNAME = entry.app.facebookLog
-    //}
-    //else {
-    //    FACEBOOK_USERNAME = "pazyukrus84@gmail.com"
-    //    FACEBOOK_PASSWORD = "ABaKaNaNa20"
-    //}
+    if(entry.app.facebookPass != "0" && entry.app.facebookLog != "0") {
+        FACEBOOK_PASSWORD = entry.app.facebookPass
+        FACEBOOK_USERNAME = entry.app.facebookLog
+    }
+    else {
+        FACEBOOK_USERNAME = "pazyukrus84@gmail.com"
+        FACEBOOK_PASSWORD = "ABaKaNaNa20"
+    }
     
-    //await initFacebook().then(() => console.log("Selenium initialized successfully."), (e) => console.log(e))
+    await initFacebook().then(() => console.log("Selenium initialized successfully."), (e) => console.log(e))
 
     processing = true
 
@@ -267,6 +267,11 @@ export async function clearAdAccounts(entry: FacebookQueueEntry, tries: number =
 }
 
 export async function initFacebook() {
+
+    facebookWebdriver = new selenium.Builder()
+        .withCapabilities(selenium.Capabilities.firefox())
+        .setFirefoxOptions(new firefox.Options().headless())
+        .build()
 
     await facebookWebdriver.get("https://developers.facebook.com/apps/")
 
