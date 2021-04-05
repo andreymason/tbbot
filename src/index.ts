@@ -21,6 +21,7 @@ const express = require("express")
 let admins = [
     "andreymason",
     "levenatko",
+    "Halynahh",
     "TBraza",
     "soboleva_vera",
     "lilipuhtb",
@@ -357,7 +358,7 @@ export let showAppIsPublishedMessage = async (app: IApp) => {
     }
 
     try {
-		let users = ["andreymason", "levenatko"]
+		let users = ["andreymason", "levenatko", "Halynahh"]
 		
 		for (let user of users) {
 			let status = await getChatStatusByUsername(user)
@@ -407,7 +408,7 @@ let showActionPicker = (chatId: number, username: string | undefined, messageToE
                 callback_data: SHOW_USERS,
             }
             ])
-        if (username == "lilipuhtb" || username == "levenatko" || username == "leraTB" || username == "papa_oscar") buttons.push([{ text: "Посмотреть оценки", callback_data: ADMIN_SHOW_RATING }])
+        if (username == "lilipuhtb" || username == "levenatko" || username == "leraTB" || username == "Halynahh") buttons.push([{ text: "Посмотреть оценки", callback_data: ADMIN_SHOW_RATING }])
     }
 
     buttons.push([{
