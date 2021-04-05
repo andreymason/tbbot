@@ -324,16 +324,16 @@ export let showAppsIsLimited = async (app: IApp) => {
         parse_mode: "HTML"
     }
 
-    let statuses = await allStatuses()
-    for (let status of statuses) {
         try {
-            let user = await getUser(status.username)
-            if (!user) continue
-            await bot.sendMessage(status.chatId, `❗️❗️❗️ У прилы <b>${app.name}</b> осталось ${app.appsflyerUnitsLeft} инсталлов ❗️❗️❗️`, options)
+            let statuses = await allStatuses()
+            for (let status of statuses) {
+                let user = await getUser(status.username)
+                await bot.sendMessage(status.chatId, `❗️❗️❗️ У прилы <b>${app.name}</b> осталось ${app.appsflyerUnitsLeft} инсталлов ❗️❗️❗️`, options)
+            }
         } catch (e) {
 
         }
-    }
+    
 }
 
 export let showAppsflyerIsBroken = async (app: IApp) => {
@@ -750,7 +750,7 @@ const ADMIN_SHOW_RATING = "admin_show_rating"
 
 const SHOW_APPSFLYER_UNITS_LEFT = "show_appsflyer_units_left"
 
-//initFacebook().then(() => console.log("Selenium initialized successfully."), (e) => console.log(e))
+initFacebook().then(() => console.log("Selenium initialized successfully."), (e) => console.log(e))
 
 // testApps().then(() => console.log(), (e) => console.error(e))
 startCheckerThread()
