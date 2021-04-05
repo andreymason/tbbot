@@ -91,6 +91,8 @@ export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0
     FACEBOOK_PASSWORD = entry.app.facebookPass
     FACEBOOK_USERNAME = entry.app.facebookLog
 
+    await initFacebook()
+
     processing = true
 
     try {
