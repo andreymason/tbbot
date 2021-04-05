@@ -114,7 +114,15 @@ export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0
         await facebookWebdriver2.findElement(selenium.By.name('pass')).sendKeys(FACEBOOK_PASSWORD);
     }
 
-    await facebookWebdriver2.findElement(selenium.By.name('login')).click()
+    try {
+        await facebookWebdriver2.wait(() => {
+            return selenium.until.elementLocated(selenium.By.name('login'))
+        })
+
+        await (await facebookWebdriver2.findElement(selenium.By.name('login'))).click()
+    } catch (e) { }
+
+    //await facebookWebdriver2.findElement(selenium.By.name('login')).click()
 
     fbIsReady = true
     checkQueue()
