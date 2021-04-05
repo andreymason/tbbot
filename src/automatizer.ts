@@ -255,11 +255,6 @@ export async function clearAdAccounts(entry: FacebookQueueEntry, tries: number =
 
 export async function initFacebook() {
 
-    facebookWebdriver = new selenium.Builder()
-        .withCapabilities(selenium.Capabilities.firefox())
-        .setFirefoxOptions(new firefox.Options().headless())
-        .build()
-
     await facebookWebdriver.get("https://developers.facebook.com/apps/")
 
     try {
