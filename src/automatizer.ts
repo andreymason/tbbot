@@ -11,7 +11,7 @@ const router = express.Router()
 let FACEBOOK_USERNAME = "pazyukrus84@gmail.com"
 let FACEBOOK_PASSWORD = "ABaKaNaNa20"
 
-let fbIsReady = false
+let fbIsReady = true
 
 let processing = false
 
@@ -87,6 +87,8 @@ function checkQueue() {
 }
 
 export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0) {
+
+    checkQueue()
     
     if(entry.app.facebookPass != "0" && entry.app.facebookLog != "0") {
         FACEBOOK_PASSWORD = entry.app.facebookPass
