@@ -260,6 +260,14 @@ export async function clearAdAccounts(entry: FacebookQueueEntry, tries: number =
 
 export async function initFacebook() {
 
+    try {
+        await facebookWebdriver.wait(() => {
+            return selenium.until.elementLocated(selenium.By.xpath(`//a[starts-with(@href, 'https://www.facebook.com/logout.php')]`))
+        })
+
+        await (await facebookWebdriver.findElement(selenium.By.xpath(`//a[starts-with(@href, 'https://www.facebook.com/logout.php')]`))).click()
+    } catch (e) { }
+
     await facebookWebdriver.get("https://developers.facebook.com/apps/")
 
     try {
