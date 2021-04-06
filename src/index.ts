@@ -294,8 +294,9 @@ export let showAppIsBannedMessage = async (app: IApp) => {
     for (let status of statuses) {
         try {
             let user = await getUser(status.username)
-            if (!user) continue
-            await bot.sendMessage(status.chatId, `❗️❗️❗️ <b>${app.name}</b> забанена в Google Play ❗️❗️❗️\nВсе РК отвязаны. \nОстанавливайте трафик, господа.`, options)
+            if (user) {
+                await bot.sendMessage(status.chatId, `❗️❗️❗️ <b>${app.name}</b> забанена в Google Play ❗️❗️❗️\nВсе РК отвязаны. \nОстанавливайте трафик, господа.`, options)
+            }
         } catch (e) {
 
         }
@@ -311,8 +312,9 @@ export let showAppsIsZero = async (app: IApp) => {
     for (let status of statuses) {
         try {
             let user = await getUser(status.username)
-            if (!user) continue
-            await bot.sendMessage(status.chatId, `❗️❗️❗️ У прилы <b>${app.name}</b> закончились инсталлы ❗️❗️❗️`, options)
+            if (user) {
+                await bot.sendMessage(status.chatId, `❗️❗️❗️ У прилы <b>${app.name}</b> закончились инсталлы ❗️❗️❗️`, options)
+            }
         } catch (e) {
 
         }
@@ -324,16 +326,17 @@ export let showAppsIsLimited = async (app: IApp) => {
         parse_mode: "HTML"
     }
 
+    let statuses = await allStatuses()
+    for (let status of statuses) {
         try {
-            let statuses = await allStatuses()
-            for (let status of statuses) {
-                let user = await getUser(status.username)
+            let user = await getUser(status.username)
+            if (user) { 
                 await bot.sendMessage(status.chatId, `❗️❗️❗️ У прилы <b>${app.name}</b> осталось ${app.appsflyerUnitsLeft} инсталлов ❗️❗️❗️`, options)
             }
         } catch (e) {
 
         }
-    
+    }
 }
 
 export let showAppsflyerIsBroken = async (app: IApp) => {
