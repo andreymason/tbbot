@@ -283,7 +283,7 @@ export async function checkAppsflyerUnits(app: IApp) {
 
     await appsflyerWebdriver.get("https://hq1.appsflyer.com/account/get-account-info/" + app.appsflyerLogin)
 
-    let pre = await appsflyerWebdriver.executeScript("return document.body.innerHTML")
+    let pre = await appsflyerWebdriver.executeScript("return document.getElementsByTagName('pre')[0].innerHTML") as string
 
     let appObject = JSON.parse(pre)
 
