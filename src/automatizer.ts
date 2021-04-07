@@ -301,7 +301,7 @@ export async function checkAppsflyerUnits(app: IApp) {
             remaining_units = parseInt(appObject.currentPackage.remaining_units)
         }
 
-        if(plan == "Zero Plan" && app.appsStatus) {
+        if(plan == "Zero Plan" && app.appsStatus && !app.banned) {
             let res = await appsflyerWebdriver.get("https://integr-testing.site/tb/appsChecker/index.php?bundle=" + app.bundle)
             
             let textOfResult = await appsflyerWebdriver.findElement(selenium.By.id('plan')).getText()
@@ -317,7 +317,7 @@ export async function checkAppsflyerUnits(app: IApp) {
 
         await App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: remaining_units }).exec()
 
-        if(app.appsflyerUnitsLeft <= 2000 && app.appsStatus) {
+        if(app.appsflyerUnitsLeft <= 2000 && app.appsStatus && !app.banned) {
             await showAppsIsLimited(app)
         }
 
@@ -372,9 +372,10 @@ export async function checkAppsflyer() {
         if (app.banned || !app.published || !app.appsflyerLogin) {
             continue
         } else {
+            await (App.findById(app._id)).update({ appsStatus: true }).exec()
             console.log(`${app}`)
         }
-
+        /*
         let success = false
         for (let index = 0; index < 3; index++) {
             try {
@@ -394,6 +395,7 @@ export async function checkAppsflyer() {
             await showAppsflyerIsBroken(app)
             await App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: 0 }).exec()
         }
+        */
     }
 
     console.log("Finished AppsFlyer checking")
