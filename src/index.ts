@@ -10,7 +10,7 @@ import { AddressInfo } from 'net';
 import { startCheckerThread } from './app_checker';
 import { addRequest, EntryType, FacebookQueueEntry, FacebookResult, initFacebook } from './automatizer';
 import { Router as InstallLogRouter } from './install_log';
-import { addApp, addUsers, allStatuses, App, createChatStatus, getApp, getApps, getChatStatusByChatId, getChatStatusByUsername, getUser, getUsersData, IApp, IChatStatus, IDLE, IUser, PROCESSING_IDS, removeApp, removeUsers, updateChatApp, updateChatStatus, updateChatUploadMessageId, WAITING_FOR_APP_ADD, WAITING_FOR_IDS_ADD, WAITING_FOR_IDS_REMOVE, WAITING_FOR_REMOVE_USERNAMES, WAITING_FOR_USERNAMES } from './models';
+import { addApp, addUsers, allUsers, allStatuses, App, createChatStatus, getApp, getApps, getChatStatusByChatId, getChatStatusByUsername, getUser, getUsersData, IApp, IChatStatus, IDLE, IUser, PROCESSING_IDS, removeApp, removeUsers, updateChatApp, updateChatStatus, updateChatUploadMessageId, WAITING_FOR_APP_ADD, WAITING_FOR_IDS_ADD, WAITING_FOR_IDS_REMOVE, WAITING_FOR_REMOVE_USERNAMES, WAITING_FOR_USERNAMES } from './models';
 import e = require('express');
 
 const logger = require('morgan');
@@ -290,16 +290,13 @@ export let showAppIsBannedMessage = async (app: IApp) => {
         parse_mode: "HTML"
     }
 
-    let statuses = await allStatuses()
-    for (let status of statuses) {
-        try {
-            let user = await getUser(status.username)
-            if (user) {
-                await bot.sendMessage(status.chatId, `❗️❗️❗️ <b>${app.name}</b> забанена в Google Play ❗️❗️❗️\nВсе РК отвязаны. \nОстанавливайте трафик, господа.`, options)
-            }
-        } catch (e) {
+    let users = await allUsers()
 
-        }
+    for (let user of users) {
+			let status = await getChatStatusByUsername(user)
+			if (status) {
+				await bot.sendMessage(status.chatId, `❗️❗️❗️ <b>${app.name}</b> забанена в Google Play ❗️❗️❗️\nВсе РК отвязаны. \nОстанавливайте трафик, господа.`, options)
+			}
     }
 }
 
@@ -308,15 +305,11 @@ export let showAppsIsZero = async (app: IApp) => {
         parse_mode: "HTML"
     }
 
-    let statuses = await allStatuses()
-    for (let status of statuses) {
-        try {
-            let user = await getUser(status.username)
-            if (user) {
-                await bot.sendMessage(status.chatId, `❗️❗️❗️ У прилы <b>${app.name}</b> закончились инсталлы ❗️❗️❗️`, options)
-            }
-        } catch (e) {
-
+    let users = await allUsers()
+    for (let user of users) {
+        let status = await getChatStatusByUsername(user)
+        if (status) {
+            await bot.sendMessage(status.chatId, `❗️❗️❗️ У прилы <b>${app.name}</b> закончились инсталлы ❗️❗️❗️`, options)
         }
     }
 }
@@ -326,16 +319,14 @@ export let showAppsIsLimited = async (app: IApp) => {
         parse_mode: "HTML"
     }
 
-    let statuses = await allStatuses()
-    for (let status of statuses) {
-        try {
-            let user = await getUser(status.username)
-            if (user) { 
-                await bot.sendMessage(status.chatId, `❗️❗️❗️ У прилы <b>${app.name}</b> осталось ${app.appsflyerUnitsLeft} инсталлов ❗️❗️❗️`, options)
-            }
-        } catch (e) {
-
+    let users = await allUsers()
+    for (let user of users) {
+        
+        let status = await getChatStatusByUsername(user)
+        if (status) { 
+            await bot.sendMessage(status.chatId, `❗️❗️❗️ У прилы <b>${app.name}</b> осталось ${app.appsflyerUnitsLeft} инсталлов ❗️❗️❗️`, options)
         }
+        
     }
 }
 
