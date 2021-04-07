@@ -373,7 +373,7 @@ export let showAppsIsDenied = async (app: IApp) => {
     }
 
     try {
-		let users = ["andreymason"]
+		let users = ["andreymason", "levenatko", "Halynahh", "vivchik1337"]
 		
 		for (let user of users) {
 			let status = await getChatStatusByUsername(user)
