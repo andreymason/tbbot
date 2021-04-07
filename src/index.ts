@@ -293,7 +293,7 @@ export let showAppIsBannedMessage = async (app: IApp) => {
     let users = await allUsers()
 
     for (let user of users) {
-			let status = await getChatStatusByUsername(user)
+			let status = await getChatStatusByUsername(user.username)
 			if (status) {
 				await bot.sendMessage(status.chatId, `❗️❗️❗️ <b>${app.name}</b> забанена в Google Play ❗️❗️❗️\nВсе РК отвязаны. \nОстанавливайте трафик, господа.`, options)
 			}
@@ -307,7 +307,7 @@ export let showAppsIsZero = async (app: IApp) => {
 
     let users = await allUsers()
     for (let user of users) {
-        let status = await getChatStatusByUsername(user)
+        let status = await getChatStatusByUsername(user.username)
         if (status) {
             await bot.sendMessage(status.chatId, `❗️❗️❗️ У прилы <b>${app.name}</b> закончились инсталлы ❗️❗️❗️`, options)
         }
@@ -322,7 +322,7 @@ export let showAppsIsLimited = async (app: IApp) => {
     let users = await allUsers()
     for (let user of users) {
         
-        let status = await getChatStatusByUsername(user)
+        let status = await getChatStatusByUsername(user.username)
         if (status) { 
             await bot.sendMessage(status.chatId, `❗️❗️❗️ У прилы <b>${app.name}</b> осталось ${app.appsflyerUnitsLeft} инсталлов ❗️❗️❗️`, options)
         }
