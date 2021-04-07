@@ -372,10 +372,9 @@ export async function checkAppsflyer() {
         if (app.banned || !app.published || !app.appsflyerLogin) {
             continue
         } else {
-            await (App.findById(app._id)).update({ appsStatus: true }).exec()
             console.log(`${app}`)
         }
-        /*
+        
         let success = false
         for (let index = 0; index < 3; index++) {
             try {
@@ -395,7 +394,7 @@ export async function checkAppsflyer() {
             await showAppsflyerIsBroken(app)
             await App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: 0 }).exec()
         }
-        */
+        
     }
 
     console.log("Finished AppsFlyer checking")
