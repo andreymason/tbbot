@@ -85,7 +85,7 @@ export interface IApp extends Document {
 
     removed: boolean,
     facebook: boolean,
-    //appsStatus: boolean,
+    appsStatus: boolean,
     facebookPass: string,
     facebookLog: string
 }
@@ -156,10 +156,10 @@ const AppSchema = new Schema({
         type: Boolean,
         default: true
     },
-    //appsStatus: {
-    //    type: Boolean, 
-    //    default: true
-    //}, 
+    appsStatus: {
+        type: Boolean, 
+        default: true
+    }, 
     facebookPass: {
         type: String, 
         default: "ABaKaNaNa20"
