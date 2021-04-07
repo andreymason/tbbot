@@ -285,7 +285,7 @@ export async function checkAppsflyerUnits(app: IApp) {
 
     let pre = await appsflyerWebdriver.findElement(selenium.By.tagName('pre')).getText()
 
-    let appObject = JSON.parse(pre);
+    let appObject = JSON.parse(pre)
 
     console.log(app.name + " \n Осталось инсталлов: " + appObject.installsLeft + "\n\n")
 
@@ -396,6 +396,7 @@ export async function checkAppsflyer() {
                 success = true
                 break
             } catch (e) {
+                console.log(e)
                 console.log(`${app.appsflyerLogin} / ${app.appsflyerPassword}`)
             }
         }
