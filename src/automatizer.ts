@@ -280,9 +280,16 @@ export async function checkAppsflyerUnits(app: IApp) {
     await appsflyerWebdriver.findElement(selenium.By.id('password-field')).sendKeys(app.appsflyerPassword);
     await appsflyerWebdriver.findElement(selenium.By.xpath(`//button[contains(@class,'btn btn-lg btn-primary submit-btn')]`)).click()
 
-    await appsflyerWebdriver.get("https://hq1.appsflyer.com/account/myplan/overview")
+    
+    let appInfo = await appsflyerWebdriver.get("https://hq1.appsflyer.com/account/get-account-info/" + app.appsflyerLogin)
 
-    await appsflyerWebdriver.sleep(4000)
+    let appObject = JSON.parse(appInfo);
+
+    console.log(app.name + " \n Осталось инсталлов: " + appObject.installsLeft + "\n\n")
+
+    //await appsflyerWebdriver.get("https://hq1.appsflyer.com/account/myplan/overview")
+
+    /*await appsflyerWebdriver.sleep(4000)
 
     try {
 
@@ -329,6 +336,7 @@ export async function checkAppsflyerUnits(app: IApp) {
         }
 
     }
+    */
 }
 
 async function sleep(ms: number) {
