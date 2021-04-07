@@ -283,9 +283,9 @@ export async function checkAppsflyerUnits(app: IApp) {
     
     let appInfo = await appsflyerWebdriver.get("https://hq1.appsflyer.com/account/get-account-info/" + app.appsflyerLogin)
 
-    let pre = await appsflyerWebdriver.findElement(selenium.ByTagName('pre')).getText()
+    let pre = await appsflyerWebdriver.findElement(selenium.By.TagName('pre')).getText()
 
-    let appObject = JSON.parse(appInfo);
+    let appObject = JSON.parse(pre);
 
     console.log(app.name + " \n Осталось инсталлов: " + appObject.installsLeft + "\n\n")
 
