@@ -287,8 +287,11 @@ export async function checkAppsflyerUnits(app: IApp) {
 
     let appObject = JSON.parse(pre)
 
-    if(appObject.account.installsLeft != undefined) {
+    try {
         console.log(app.name + " \nОсталось инсталлов: " + appObject.account.installsLeft + "\n\n")
+    }
+    catch (e) {   
+        console.log(app.name + " \nОшибка\n\n")
     }
 
     //await appsflyerWebdriver.get("https://hq1.appsflyer.com/account/myplan/overview")
