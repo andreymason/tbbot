@@ -676,7 +676,9 @@ let showAppsflyerUnits = async (chatId: number, messageToEditId: number | null =
     let text = "❗️ Осталось инсталлов:\n\n"
 
     for (let app of actualApps) {
-        text += `<b>${app.name}</b>: ${app.appsflyerUnitsLeft}\n`
+        if(!app.banned) {
+            text += `<b>${app.name}</b>: ${app.appsflyerUnitsLeft}\n`
+        }
     }
 
     if (overLimitApps.length > 0) {

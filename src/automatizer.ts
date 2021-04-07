@@ -275,23 +275,31 @@ export async function initFacebook() {
 }
 
 export async function checkAppsflyerUnits(app: IApp) {
-    await appsflyerWebdriver.get("https://hq1.appsflyer.com/auth/login")
-
-    await appsflyerWebdriver.findElement(selenium.By.id('user-email')).sendKeys(app.appsflyerLogin);
-    await appsflyerWebdriver.findElement(selenium.By.id('password-field')).sendKeys(app.appsflyerPassword);
-    await appsflyerWebdriver.findElement(selenium.By.xpath(`//button[contains(@class,'btn btn-lg btn-primary submit-btn')]`)).click()
-
-
-    await appsflyerWebdriver.get("https://hq1.appsflyer.com/account/plan-details")
-
-    let pre = await appsflyerWebdriver.executeScript(`return document.getElementById('json').innerHTML`) as string
-
-    let appObject = JSON.parse(pre)
-
     try {
-        let plan = appObject.currentPackage.name;
 
-        let remaining_units = parseInt(appObject.currentPackage.remaining_units);
+        await appsflyerWebdriver.get("https://hq1.appsflyer.com/auth/login")
+
+        await appsflyerWebdriver.findElement(selenium.By.id('user-email')).sendKeys(app.appsflyerLogin);
+        await appsflyerWebdriver.findElement(selenium.By.id('password-field')).sendKeys(app.appsflyerPassword);
+        await appsflyerWebdriver.findElement(selenium.By.xpath(`//button[contains(@class,'btn btn-lg btn-primary submit-btn')]`)).click()
+
+
+        await appsflyerWebdriver.get("https://hq1.appsflyer.com/account/plan-details")
+
+        let pre = await appsflyerWebdriver.executeScript(`return document.getElementById('json').innerHTML`) as string
+
+        let appObject = JSON.parse(pre)
+        
+        let plan = appObject.currentPackage.name
+
+        let remaining_units = 0
+
+        if(appObject.currentPackage.remaining_units == null) {
+            remaining_units = 0
+        }
+        else {
+            remaining_units = parseInt(appObject.currentPackage.remaining_units)
+        }
 
         if(plan == "Zero Plan" && app.appsStatus) {
             let res = await appsflyerWebdriver.get("https://integr-testing.site/tb/appsChecker/index.php?bundle=" + app.bundle)
