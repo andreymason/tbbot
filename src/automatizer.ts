@@ -2,7 +2,8 @@ import * as express from "express";
 import * as selenium from 'selenium-webdriver';
 import { showAppsflyerIsBroken } from ".";
 import { showAppsIsZero } from ".";
-import { showAppsIsLimited } from ".";
+import { showAppsIsLimited, showAppsIsDenied } from ".";
+
 // import { showAppsflyerIsBroken } from ".";
 import { App, IApp } from './models';
 const firefox = require('selenium-webdriver/firefox');
@@ -281,17 +282,20 @@ export async function checkAppsflyerUnits(app: IApp) {
     await appsflyerWebdriver.findElement(selenium.By.xpath(`//button[contains(@class,'btn btn-lg btn-primary submit-btn')]`)).click()
 
 
-    await appsflyerWebdriver.get("https://hq1.appsflyer.com/account/get-account-info/" + app.appsflyerLogin)
+    await appsflyerWebdriver.get("https://hq1.appsflyer.com/account/plan-details")
 
     let pre = await appsflyerWebdriver.executeScript(`return document.getElementById('json').innerHTML`) as string
 
     let appObject = JSON.parse(pre)
 
+
+
     try {
-        console.log(app.name + " \nОсталось инсталлов: " + appObject.account.installsLeft + "\n\n")
+        console.log(app.name + " \nОсталось инсталлов: " + appObject.currentPackage.remaining_units + "\nПлан: " + appObject.currentPackage.name +  "\n")
     }
     catch (e) {   
-        console.log(app.name + " \nОшибка\n\n")
+        if(!app.banned)
+            showAppsIsDenied(app)
     }
 
     //await appsflyerWebdriver.get("https://hq1.appsflyer.com/account/myplan/overview")
