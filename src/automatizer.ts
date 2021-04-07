@@ -280,8 +280,8 @@ export async function checkAppsflyerUnits(app: IApp) {
     await appsflyerWebdriver.findElement(selenium.By.id('password-field')).sendKeys(app.appsflyerPassword);
     await appsflyerWebdriver.findElement(selenium.By.xpath(`//button[contains(@class,'btn btn-lg btn-primary submit-btn')]`)).click()
 
-    
-    let appInfo = await appsflyerWebdriver.get("https://hq1.appsflyer.com/account/get-account-info/" + app.appsflyerLogin)
+
+    await appsflyerWebdriver.get("https://hq1.appsflyer.com/account/get-account-info/" + app.appsflyerLogin)
 
     let pre = await appsflyerWebdriver.findElement(selenium.By.tagName('pre')).getText()
 
