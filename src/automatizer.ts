@@ -288,30 +288,12 @@ export async function checkAppsflyerUnits(app: IApp) {
 
     let appObject = JSON.parse(pre)
 
-
-
     try {
-        console.log(app.name + " \nОсталось инсталлов: " + appObject.currentPackage.remaining_units + "\nПлан: " + appObject.currentPackage.name +  "\n")
-    }
-    catch (e) {   
-        if(!app.banned)
-            showAppsIsDenied(app)
-    }
+        let plan = appObject.currentPackage.name;
 
-    //await appsflyerWebdriver.get("https://hq1.appsflyer.com/account/myplan/overview")
+        let remaining_units = parseInt(appObject.currentPackage.remaining_units);
 
-    /*await appsflyerWebdriver.sleep(4000)
-
-    try {
-
-        let result = await appsflyerWebdriver.executeScript(`return document.getElementsByTagName('af-web-component')[0].shadowRoot.innerHTML`) as string
-
-        let plan = /<div class="af-layout-header-title test__layout-title"><span class="title">(.*?)<\/span><\/div>/
-
-        let planType = plan.exec(result) || []
-
-        let plann = planType[1]
-        if(plann == "Zero Plan" && app.appsStatus) {
+        if(plan == "Zero Plan" && app.appsStatus) {
             let res = await appsflyerWebdriver.get("https://integr-testing.site/tb/appsChecker/index.php?bundle=" + app.bundle)
             
             let textOfResult = await appsflyerWebdriver.findElement(selenium.By.id('plan')).getText()
@@ -322,32 +304,20 @@ export async function checkAppsflyerUnits(app: IApp) {
 
             await showAppsIsZero(app)
         }
-        
-        let regex = /Remaining units<\/span><span class="af-features-feature-data-value"><span class="af-formatted-number ">(.*?)</g
 
-        let matches = regex.exec(result) || []
+        console.log(`${app.name}: ${remaining_units} left (${app.appsflyerLogin} / ${app.appsflyerPassword})}`)
 
-        let unitsLeft = matches[1]
-
-        let unitsLeftNumber = parseInt(unitsLeft.replace(',', '').replace('.', ''))
-
-        console.log(`${app.name}: ${unitsLeftNumber} left (${app.appsflyerLogin} / ${app.appsflyerPassword})}`)
-
-        await App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: unitsLeftNumber }).exec()
+        await App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: remaining_units }).exec()
 
         if(app.appsflyerUnitsLeft <= 2000 && app.appsStatus) {
             await showAppsIsLimited(app)
         }
-    } catch (e) {   
-        console.log(e)
-        await App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: 0 }).exec()
-        if(app.appsStatus) {
-            await App.updateOne({ _id: app._id }, { appsStatus: false }).exec()
-            await showAppsIsZero(app)
-        }
 
     }
-    */
+    catch (e) {   
+        if(!app.banned)
+            showAppsIsDenied(app)
+    }
 }
 
 async function sleep(ms: number) {
@@ -400,7 +370,9 @@ export async function checkAppsflyer() {
         let success = false
         for (let index = 0; index < 3; index++) {
             try {
-                await checkAppsflyerUnits(app)
+                if(!app.banned) {
+                    await checkAppsflyerUnits(app)
+                }
 
                 success = true
                 break
