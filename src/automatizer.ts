@@ -281,7 +281,9 @@ export async function checkAppsflyerUnits(app: IApp) {
     await appsflyerWebdriver.findElement(selenium.By.xpath(`//button[contains(@class,'btn btn-lg btn-primary submit-btn')]`)).click()
 
     
-    let appInfo = await appsflyerWebdriver.get("https://hq1.appsflyer.com/account/get-account-info/" + app.appsflyerLogin).getText()
+    let appInfo = await appsflyerWebdriver.get("https://hq1.appsflyer.com/account/get-account-info/" + app.appsflyerLogin)
+
+    let pre = await appsflyerWebdriver.findElement(selenium.By.getElementsByTagName('pre')).getText()
 
     let appObject = JSON.parse(appInfo);
 
