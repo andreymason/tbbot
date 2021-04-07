@@ -367,6 +367,27 @@ export let showAppIsPublishedMessage = async (app: IApp) => {
     }
 }
 
+export let showAppsIsDenied = async (app: IApp) => {
+    const options: TelegramBot.SendMessageOptions = {
+        parse_mode: "HTML"
+    }
+
+    try {
+		let users = ["andreymason", "levenatko", "Halynahh", "vivchik1337"]
+		
+		for (let user of users) {
+			let status = await getChatStatusByUsername(user)
+
+			if (status) {
+				await bot.sendMessage(status.chatId, `По приле <b>${app.name}</b> невозможно увидеть кол-во оставшихся инсталлов\nПожалуйста, обновите доступы :)`, options)
+			}
+		}
+        
+    } catch (e) {
+
+    }
+}
+
 let showActionPicker = (chatId: number, username: string | undefined, messageToEditId: number | null = null) => {
     let buttons = [[
         {
