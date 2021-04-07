@@ -317,7 +317,7 @@ export async function checkAppsflyerUnits(app: IApp) {
 
         await App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: remaining_units }).exec()
 
-        if(app.appsflyerUnitsLeft <= 2000 && app.appsStatus && !app.banned) {
+        if(app.appsflyerUnitsLeft <= 2000 && app.appsStatus && !app.banned && plan != "Zero Plan") {
             await showAppsIsLimited(app)
         }
 
