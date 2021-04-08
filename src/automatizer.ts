@@ -146,6 +146,7 @@ export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0
 
         await (await facebookWebdriver.findElement(selenium.By.name(`save_changes`))).click()
     } catch (e) {
+        await initFacebook()
         console.log(e)
         if (tries >= 3) {
             processing = false
