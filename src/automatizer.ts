@@ -125,13 +125,17 @@ export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0
                     console.log(`Already present: ${accountId}`)
                     continue
                 } catch (e) {
-
+                    console.log(e)
                 }
 
-                await input.sendKeys(accountId)
-                await facebookWebdriver.wait(() => {
+                try {
+                    await input.sendKeys(accountId)
+                    await facebookWebdriver.wait(() => {
                     return selenium.until.elementLocated(selenium.By.xpath(`//span[text()[contains(., '${accountId}')]]`))
                 })
+                } catch(e) {
+                    console.log("Can't send accountID")
+                }
 
                 await facebookWebdriver.sleep(600)
                 await input.sendKeys(selenium.Key.ENTER)
