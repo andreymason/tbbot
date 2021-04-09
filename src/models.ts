@@ -253,16 +253,16 @@ export const reformatDb = async () => {
     let apps = await App.find()
 
     for (let app of apps) {
-        await app.updateOne({ facebookId: app.facebookId }).exec()
+        await app.update({ facebookId: app.facebookId }).exec()
     }
 }
 
 export const updateApp = async (facebookId: string, bundle: string, onesignalId: string) => {
-    return App.updateOne({ facebookId: facebookId }, { bundle: bundle, onesignalId: onesignalId, banned: false }).exec()
+    return App.update({ facebookId: facebookId }, { bundle: bundle, onesignalId: onesignalId, banned: false }).exec()
 }
 
 export const removeApp = async (facebookId: string) => {
-    return App.updateOne({ facebookId: facebookId }, { removed: true }).exec()
+    return App.update({ facebookId: facebookId }, { removed: true }).exec()
 }
 
 export const getUser = async (username: string) => {
