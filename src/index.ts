@@ -771,4 +771,4 @@ initFacebook().then(() => console.log("Selenium initialized successfully."), (e)
 
 // testApps().then(() => console.log(), (e) => console.error(e))
 startCheckerThread()
-//startAppsflyerThread()
+startAppsflyerThread()
