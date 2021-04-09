@@ -375,7 +375,6 @@ export async function checkAppsflyer() {
     for (let app of apps) {
         // console.log(`${app.name} - ${app.appsflyerUnitsLeft}`)
         if (app.banned || !app.published || !app.appsflyerLogin) {
-            console.log("Zalupa")
             continue
         } else {
             console.log(`${app}`)
@@ -387,7 +386,7 @@ export async function checkAppsflyer() {
                 if(!app.banned) {
                     await checkAppsflyerUnits(app)
                 }
-
+                console.log("xyu")
                 success = true
                 break
             } catch (e) {
