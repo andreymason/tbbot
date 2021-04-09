@@ -330,8 +330,10 @@ export async function checkAppsflyerUnits(app: IApp) {
 
     }
     catch (e) {   
-        if(!app.banned)
+        if(!app.banned) {
+            console.log("Ошибка при авторизации в апс")
             console.log(e)
+        }
             //showAppsIsDenied(app)
     }
 }
@@ -393,6 +395,7 @@ export async function checkAppsflyer() {
                 success = true
                 break
             } catch (e) {
+                console.log("Ошибка при проверке юнитов")
                 console.log(e)
                 console.log(`${app.appsflyerLogin} / ${app.appsflyerPassword}`)
             }
@@ -425,6 +428,7 @@ export async function startAppsflyerThread() {
             console.log("Starting AppsFlyer check")
             await checkAppsflyer()
         } catch (e) {
+            console.log("Ошибка при старте проверки апса")
             console.log(e)
         }
 
