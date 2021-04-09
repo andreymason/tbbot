@@ -219,11 +219,11 @@ export const markAppAsBanned = async (app: IApp) => {
 }
 
 export const markAppAsPublished = async (app: IApp) => {
-    return await (App.findById(app._id)).updateOne({ published: true }).exec()
+    return await (App.findById(app._id)).update({ published: true }).exec()
 }
 
 export const updateAppRating = async (app: IApp, rating: string) => {
-    return await (App.findById(app._id)).updateOne({ rating: rating }).exec()
+    return await (App.findById(app._id)).update({ rating: rating }).exec()
 }
 
 export const getApps = async () => {
