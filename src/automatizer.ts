@@ -31,9 +31,7 @@ try {
         .setFirefoxOptions(new firefox.Options().headless())
         .build()
 
-    startAppsflyerThread()
-
-    //checkAppsflyer()
+    checkAppsflyer()
 
 } catch (e) {
     console.log(e)
@@ -127,17 +125,13 @@ export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0
                     console.log(`Already present: ${accountId}`)
                     continue
                 } catch (e) {
-                    console.log(e)
+
                 }
 
-                try {
-                    await input.sendKeys(accountId)
-                    await facebookWebdriver.wait(() => {
+                await input.sendKeys(accountId)
+                await facebookWebdriver.wait(() => {
                     return selenium.until.elementLocated(selenium.By.xpath(`//span[text()[contains(., '${accountId}')]]`))
                 })
-                } catch(e) {
-                    console.log("Can't send accountID")
-                }
 
                 await facebookWebdriver.sleep(600)
                 await input.sendKeys(selenium.Key.ENTER)
@@ -152,7 +146,6 @@ export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0
 
         await (await facebookWebdriver.findElement(selenium.By.name(`save_changes`))).click()
     } catch (e) {
-        await initFacebook()
         console.log(e)
         if (tries >= 3) {
             processing = false
@@ -330,11 +323,8 @@ export async function checkAppsflyerUnits(app: IApp) {
 
     }
     catch (e) {   
-        if(!app.banned) {
-            console.log("Ошибка при авторизации в апс")
-            console.log(e)
-        }
-            //showAppsIsDenied(app)
+        if(!app.banned)
+            showAppsIsDenied(app)
     }
 }
 
@@ -390,12 +380,11 @@ export async function checkAppsflyer() {
             try {
                 if(!app.banned) {
                     await checkAppsflyerUnits(app)
-                    console.log("xyu2")
                 }
+
                 success = true
                 break
             } catch (e) {
-                console.log("Ошибка при проверке юнитов")
                 console.log(e)
                 console.log(`${app.appsflyerLogin} / ${app.appsflyerPassword}`)
             }
@@ -422,13 +411,12 @@ let wait = async (ms: number) => {
 //     appsflyerPassword: "Qwert123!"
 // } as any)
 
-export async function startAppsflyerThread() {
+export let startAppsflyerThread = async () => {
     while (true) {
         try {
             console.log("Starting AppsFlyer check")
             await checkAppsflyer()
         } catch (e) {
-            console.log("Ошибка при старте проверки апса")
             console.log(e)
         }
 

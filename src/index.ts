@@ -10,7 +10,7 @@ import { AddressInfo } from 'net';
 import { startCheckerThread } from './app_checker';
 import { addRequest, EntryType, FacebookQueueEntry, FacebookResult, initFacebook } from './automatizer';
 import { Router as InstallLogRouter } from './install_log';
-import { addApp, addUsers, allUsers, App, createChatStatus, getApp, getApps, getChatStatusByChatId, getChatStatusByUsername, getUser, getUsersData, IApp, IChatStatus, IDLE, IUser, PROCESSING_IDS, removeApp, removeUsers, updateChatApp, updateChatStatus, updateChatUploadMessageId, WAITING_FOR_APP_ADD, WAITING_FOR_IDS_ADD, WAITING_FOR_IDS_REMOVE, WAITING_FOR_REMOVE_USERNAMES, WAITING_FOR_USERNAMES } from './models';
+import { addApp, addUsers, allUsers, allStatuses, App, createChatStatus, getApp, getApps, getChatStatusByChatId, getChatStatusByUsername, getUser, getUsersData, IApp, IChatStatus, IDLE, IUser, PROCESSING_IDS, removeApp, removeUsers, updateChatApp, updateChatStatus, updateChatUploadMessageId, WAITING_FOR_APP_ADD, WAITING_FOR_IDS_ADD, WAITING_FOR_IDS_REMOVE, WAITING_FOR_REMOVE_USERNAMES, WAITING_FOR_USERNAMES } from './models';
 import e = require('express');
 
 const logger = require('morgan');
@@ -373,7 +373,7 @@ export let showAppsIsDenied = async (app: IApp) => {
     }
 
     try {
-		let users = ["andreymason"]
+		let users = ["andreymason", "levenatko", "Halynahh", "vivchik1337"]
 		
 		for (let user of users) {
 			let status = await getChatStatusByUsername(user)
@@ -771,4 +771,3 @@ initFacebook().then(() => console.log("Selenium initialized successfully."), (e)
 
 // testApps().then(() => console.log(), (e) => console.error(e))
 startCheckerThread()
-//startAppsflyerThread()
