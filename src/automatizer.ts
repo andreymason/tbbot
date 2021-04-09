@@ -379,14 +379,13 @@ export async function checkAppsflyer() {
         } else {
             console.log(`${app}`)
         }
-        
+        console.log("xyu")
         let success = false
         for (let index = 0; index < 3; index++) {
             try {
                 if(!app.banned) {
                     await checkAppsflyerUnits(app)
                 }
-                console.log("xyu")
                 success = true
                 break
             } catch (e) {
