@@ -331,7 +331,8 @@ export async function checkAppsflyerUnits(app: IApp) {
     }
     catch (e) {   
         if(!app.banned)
-            showAppsIsDenied(app)
+            console.log(e)
+            //showAppsIsDenied(app)
     }
 }
 
