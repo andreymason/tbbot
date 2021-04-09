@@ -31,6 +31,8 @@ try {
         .setFirefoxOptions(new firefox.Options().headless())
         .build()
 
+    startAppsflyerThread()
+
     //checkAppsflyer()
 
 } catch (e) {
@@ -416,7 +418,7 @@ let wait = async (ms: number) => {
 //     appsflyerPassword: "Qwert123!"
 // } as any)
 
-export let startAppsflyerThread = async () => {
+export async function startAppsflyerThread() {
     while (true) {
         try {
             console.log("Starting AppsFlyer check")
