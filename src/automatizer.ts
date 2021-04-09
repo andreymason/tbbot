@@ -31,7 +31,7 @@ try {
         .setFirefoxOptions(new firefox.Options().headless())
         .build()
 
-    //checkAppsflyer()
+    checkAppsflyer()
 
 } catch (e) {
     console.log(e)
