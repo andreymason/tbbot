@@ -375,6 +375,7 @@ export async function checkAppsflyer() {
     for (let app of apps) {
         // console.log(`${app.name} - ${app.appsflyerUnitsLeft}`)
         if (app.banned || !app.published || !app.appsflyerLogin) {
+            console.log("Zalupa")
             continue
         } else {
             console.log(`${app}`)
