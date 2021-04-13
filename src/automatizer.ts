@@ -255,20 +255,25 @@ export async function clearAdAccounts(entry: FacebookQueueEntry, tries: number =
 }
 
 export async function initFacebook() {
-
+console.log("Started FB initialization")
+try{
     await facebookWebdriver.get("https://developers.facebook.com/apps/")
-
-    try {
+console.log("Loaded developers.facebook.com/apps")
+    
         await facebookWebdriver.wait(() => {
             return selenium.until.elementLocated(selenium.By.xpath(`//button[@data-cookiebanner='accept_button']`))
         })
 
         await (await facebookWebdriver.findElement(selenium.By.xpath(`//button[@data-cookiebanner='accept_button']`))).click()
-    } catch (e) { }
+    } catch (e) { 
+	console.log(e)
+}
 
     await facebookWebdriver.findElement(selenium.By.name('email')).sendKeys(FACEBOOK_USERNAME);
     await facebookWebdriver.findElement(selenium.By.name('pass')).sendKeys(FACEBOOK_PASSWORD);
     await facebookWebdriver.findElement(selenium.By.name('login')).click()
+
+console.log("Authenticated FB")
 
     fbIsReady = true
     checkQueue()

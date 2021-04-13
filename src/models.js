@@ -47,7 +47,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.updateChatApp = exports.updateChatUploadMessageId = exports.updateChatStatus = exports.getChatStatusByUsername = exports.getChatStatusByChatId = exports.createChatStatus = exports.validApp = exports.allStatuses = exports.getUser = exports.removeApp = exports.updateApp = exports.reformatDb = exports.addApp = exports.getApp = exports.getApps = exports.updateAppRating = exports.markAppAsPublished = exports.markAppAsBanned = exports.removeUsers = exports.addUsers = exports.App = exports.getUsersData = exports.ChatStatusModel = exports.OSGroupModel = exports.OSSegmentModel = exports.WAITING_FOR_REMOVE_USERNAMES = exports.WAITING_FOR_APP_ADD = exports.WAITING_FOR_IDS_REMOVE = exports.WAITING_FOR_IDS_ADD = exports.PROCESSING_IDS = exports.WAITING_FOR_USERNAMES = exports.IDLE = void 0;
+exports.updateChatApp = exports.updateChatUploadMessageId = exports.updateChatStatus = exports.getChatStatusByUsername = exports.getChatStatusByChatId = exports.createChatStatus = exports.validApp = exports.allUsers = exports.allStatuses = exports.getUser = exports.removeApp = exports.updateApp = exports.reformatDb = exports.addApp = exports.getApp = exports.getApps = exports.updateAppRating = exports.markAppAsPublished = exports.markAppAsBanned = exports.removeUsers = exports.addUsers = exports.App = exports.getUsersData = exports.ChatStatusModel = exports.OSGroupModel = exports.OSSegmentModel = exports.WAITING_FOR_REMOVE_USERNAMES = exports.WAITING_FOR_APP_ADD = exports.WAITING_FOR_IDS_REMOVE = exports.WAITING_FOR_IDS_ADD = exports.PROCESSING_IDS = exports.WAITING_FOR_USERNAMES = exports.IDLE = void 0;
 var mongoose_1 = require("mongoose");
 exports.IDLE = 0;
 exports.WAITING_FOR_USERNAMES = 2;
@@ -120,6 +120,18 @@ var AppSchema = new mongoose_1.Schema({
     facebook: {
         type: Boolean,
         "default": true
+    },
+    appsStatus: {
+        type: Boolean,
+        "default": true
+    },
+    facebookPass: {
+        type: String,
+        "default": "ABaKaNaNa20"
+    },
+    facebookLog: {
+        type: String,
+        "default": "pazyukrus84@gmail.com"
     }
 });
 exports.getUsersData = function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -290,6 +302,14 @@ exports.allStatuses = function () { return __awaiter(void 0, void 0, void 0, fun
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, exports.ChatStatusModel.find()];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+exports.allUsers = function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, User.find()];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });

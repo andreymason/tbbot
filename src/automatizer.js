@@ -40,6 +40,8 @@ exports.Router = exports.startAppsflyerThread = exports.checkAppsflyer = exports
 var express = require("express");
 var selenium = require("selenium-webdriver");
 var _1 = require(".");
+var _2 = require(".");
+var _3 = require(".");
 // import { showAppsflyerIsBroken } from ".";
 var models_1 = require("./models");
 var firefox = require('selenium-webdriver/firefox');
@@ -395,12 +397,15 @@ function initFacebook() {
         var e_10;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, facebookWebdriver.get("https://developers.facebook.com/apps/")];
+                case 0:
+                    console.log("Started FB initialization");
+                    _a.label = 1;
                 case 1:
-                    _a.sent();
-                    _a.label = 2;
+                    _a.trys.push([1, 6, , 7]);
+                    return [4 /*yield*/, facebookWebdriver.get("https://developers.facebook.com/apps/")];
                 case 2:
-                    _a.trys.push([2, 6, , 7]);
+                    _a.sent();
+                    console.log("Loaded developers.facebook.com/apps");
                     return [4 /*yield*/, facebookWebdriver.wait(function () {
                             return selenium.until.elementLocated(selenium.By.xpath("//button[@data-cookiebanner='accept_button']"));
                         })];
@@ -413,6 +418,7 @@ function initFacebook() {
                     return [3 /*break*/, 7];
                 case 6:
                     e_10 = _a.sent();
+                    console.log(e_10);
                     return [3 /*break*/, 7];
                 case 7: return [4 /*yield*/, facebookWebdriver.findElement(selenium.By.name('email')).sendKeys(FACEBOOK_USERNAME)];
                 case 8:
@@ -423,6 +429,7 @@ function initFacebook() {
                     return [4 /*yield*/, facebookWebdriver.findElement(selenium.By.name('login')).click()];
                 case 10:
                     _a.sent();
+                    console.log("Authenticated FB");
                     fbIsReady = true;
                     checkQueue();
                     return [2 /*return*/];
@@ -433,10 +440,12 @@ function initFacebook() {
 exports.initFacebook = initFacebook;
 function checkAppsflyerUnits(app) {
     return __awaiter(this, void 0, void 0, function () {
-        var result, plan, planType, plann, regex, matches, unitsLeft, unitsLeftNumber, res, textOfResult, e_11;
+        var pre, appObject, plan, remaining_units, res, textOfResult, e_11;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, appsflyerWebdriver.get("https://hq1.appsflyer.com/auth/login")];
+                case 0:
+                    _a.trys.push([0, 15, , 16]);
+                    return [4 /*yield*/, appsflyerWebdriver.get("https://hq1.appsflyer.com/auth/login")];
                 case 1:
                     _a.sent();
                     return [4 /*yield*/, appsflyerWebdriver.findElement(selenium.By.id('user-email')).sendKeys(app.appsflyerLogin)];
@@ -448,45 +457,53 @@ function checkAppsflyerUnits(app) {
                     return [4 /*yield*/, appsflyerWebdriver.findElement(selenium.By.xpath("//button[contains(@class,'btn btn-lg btn-primary submit-btn')]")).click()];
                 case 4:
                     _a.sent();
-                    return [4 /*yield*/, appsflyerWebdriver.get("https://hq1.appsflyer.com/account/myplan/overview")];
+                    return [4 /*yield*/, appsflyerWebdriver.get("https://hq1.appsflyer.com/account/plan-details")];
                 case 5:
                     _a.sent();
-                    return [4 /*yield*/, appsflyerWebdriver.sleep(4000)];
+                    return [4 /*yield*/, appsflyerWebdriver.executeScript("return document.getElementById('json').innerHTML")];
                 case 6:
-                    _a.sent();
-                    _a.label = 7;
-                case 7:
-                    _a.trys.push([7, 12, , 14]);
-                    return [4 /*yield*/, appsflyerWebdriver.executeScript("return document.getElementsByTagName('af-web-component')[0].shadowRoot.innerHTML")];
-                case 8:
-                    result = _a.sent();
-                    plan = /<div class="af-layout-header-title test__layout-title"><span class="title">(.*?)<\/span><\/div>/;
-                    planType = plan.exec(result) || [];
-                    plann = planType[1];
-                    regex = /Remaining units<\/span><span class="af-features-feature-data-value"><span class="af-formatted-number ">(.*?)</g;
-                    matches = regex.exec(result) || [];
-                    unitsLeft = matches[1];
-                    unitsLeftNumber = parseInt(unitsLeft.replace(',', '').replace('.', ''));
-                    console.log(app.name + ": " + unitsLeftNumber + " left (" + app.appsflyerLogin + " / " + app.appsflyerPassword + ")} plan type: " + plann);
+                    pre = _a.sent();
+                    appObject = JSON.parse(pre);
+                    plan = appObject.currentPackage.name;
+                    remaining_units = 0;
+                    if (appObject.currentPackage.remaining_units == null) {
+                        remaining_units = 0;
+                    }
+                    else {
+                        remaining_units = parseInt(appObject.currentPackage.remaining_units);
+                    }
+                    if (!(plan == "Zero Plan" && app.appsStatus && !app.banned)) return [3 /*break*/, 11];
                     return [4 /*yield*/, appsflyerWebdriver.get("https://integr-testing.site/tb/appsChecker/index.php?bundle=" + app.bundle)];
-                case 9:
+                case 7:
                     res = _a.sent();
                     return [4 /*yield*/, appsflyerWebdriver.findElement(selenium.By.id('plan')).getText()];
-                case 10:
+                case 8:
                     textOfResult = _a.sent();
-                    console.log("" + textOfResult);
-                    return [4 /*yield*/, models_1.App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: unitsLeftNumber }).exec()];
-                case 11:
+                    return [4 /*yield*/, models_1.App.updateOne({ _id: app._id }, { appsStatus: false }).exec()];
+                case 9:
                     _a.sent();
-                    return [3 /*break*/, 14];
+                    console.log("" + textOfResult);
+                    return [4 /*yield*/, _2.showAppsIsZero(app)];
+                case 10:
+                    _a.sent();
+                    _a.label = 11;
+                case 11:
+                    console.log(app.name + ": " + remaining_units + " left (" + app.appsflyerLogin + " / " + app.appsflyerPassword + ")}");
+                    return [4 /*yield*/, models_1.App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: remaining_units }).exec()];
                 case 12:
-                    e_11 = _a.sent();
-                    console.log(e_11);
-                    return [4 /*yield*/, models_1.App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: 0 }).exec()];
+                    _a.sent();
+                    if (!(app.appsflyerUnitsLeft <= 2000 && app.appsStatus && !app.banned && plan != "Zero Plan")) return [3 /*break*/, 14];
+                    return [4 /*yield*/, _3.showAppsIsLimited(app)];
                 case 13:
                     _a.sent();
-                    return [3 /*break*/, 14];
-                case 14: return [2 /*return*/];
+                    _a.label = 14;
+                case 14: return [3 /*break*/, 16];
+                case 15:
+                    e_11 = _a.sent();
+                    if (!app.banned)
+                        _3.showAppsIsDenied(app);
+                    return [3 /*break*/, 16];
+                case 16: return [2 /*return*/];
             }
         });
     });
@@ -519,11 +536,11 @@ function checkAppsflyer() {
                     _i = 0, apps_1 = apps;
                     _a.label = 2;
                 case 2:
-                    if (!(_i < apps_1.length)) return [3 /*break*/, 12];
+                    if (!(_i < apps_1.length)) return [3 /*break*/, 13];
                     app = apps_1[_i];
                     // console.log(`${app.name} - ${app.appsflyerUnitsLeft}`)
                     if (app.banned || !app.published || !app.appsflyerLogin) {
-                        return [3 /*break*/, 11];
+                        return [3 /*break*/, 12];
                     }
                     else {
                         console.log("" + app);
@@ -532,35 +549,39 @@ function checkAppsflyer() {
                     index = 0;
                     _a.label = 3;
                 case 3:
-                    if (!(index < 3)) return [3 /*break*/, 8];
+                    if (!(index < 3)) return [3 /*break*/, 9];
                     _a.label = 4;
                 case 4:
-                    _a.trys.push([4, 6, , 7]);
+                    _a.trys.push([4, 7, , 8]);
+                    if (!!app.banned) return [3 /*break*/, 6];
                     return [4 /*yield*/, checkAppsflyerUnits(app)];
                 case 5:
                     _a.sent();
-                    success = true;
-                    return [3 /*break*/, 8];
+                    _a.label = 6;
                 case 6:
-                    e_12 = _a.sent();
-                    console.log(app.appsflyerLogin + " / " + app.appsflyerPassword);
-                    return [3 /*break*/, 7];
+                    success = true;
+                    return [3 /*break*/, 9];
                 case 7:
+                    e_12 = _a.sent();
+                    console.log(e_12);
+                    console.log(app.appsflyerLogin + " / " + app.appsflyerPassword);
+                    return [3 /*break*/, 8];
+                case 8:
                     index++;
                     return [3 /*break*/, 3];
-                case 8:
-                    if (!!success) return [3 /*break*/, 11];
-                    return [4 /*yield*/, _1.showAppsflyerIsBroken(app)];
                 case 9:
-                    _a.sent();
-                    return [4 /*yield*/, models_1.App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: 0 }).exec()];
+                    if (!!success) return [3 /*break*/, 12];
+                    return [4 /*yield*/, _1.showAppsflyerIsBroken(app)];
                 case 10:
                     _a.sent();
-                    _a.label = 11;
+                    return [4 /*yield*/, models_1.App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: 0 }).exec()];
                 case 11:
+                    _a.sent();
+                    _a.label = 12;
+                case 12:
                     _i++;
                     return [3 /*break*/, 2];
-                case 12:
+                case 13:
                     console.log("Finished AppsFlyer checking");
                     return [2 /*return*/];
             }

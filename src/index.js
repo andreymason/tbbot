@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.showAppIsPublishedMessage = exports.showAppsflyerIsBroken = exports.showAppIsBannedMessage = void 0;
+exports.showAppsIsDenied = exports.showAppIsPublishedMessage = exports.showAppsflyerIsBroken = exports.showAppsIsLimited = exports.showAppsIsZero = exports.showAppIsBannedMessage = void 0;
 var API_KEY = "1645312068:AAHp1QfOb61mqvvVQA0olqpMUyKx2G1aLw8";
 var PORT = 4012;
 var MONGO = "mongodb://127.0.0.1:27017/tb";
@@ -55,6 +55,7 @@ var express = require("express");
 var admins = [
     "andreymason",
     "levenatko",
+    "Halynahh",
     "TBraza",
     "soboleva_vera",
     "lilipuhtb",
@@ -344,45 +345,100 @@ var showEnterRemoveUsersIds = function (chatId, messageId, username) {
     bot.editMessageText('<b>Удаление пользователей из бота.</b>\nВведите айди, каждый с новой строки. Пример:\n@nickname1\n@nickname2', options);
 };
 exports.showAppIsBannedMessage = function (app) { return __awaiter(void 0, void 0, void 0, function () {
-    var options, statuses, _i, statuses_1, status_1, user, e_2;
+    var options, users, _i, users_1, user, status_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 options = {
                     parse_mode: "HTML"
                 };
-                return [4 /*yield*/, models_1.allStatuses()];
+                return [4 /*yield*/, models_1.allUsers()];
             case 1:
-                statuses = _a.sent();
-                _i = 0, statuses_1 = statuses;
+                users = _a.sent();
+                _i = 0, users_1 = users;
                 _a.label = 2;
             case 2:
-                if (!(_i < statuses_1.length)) return [3 /*break*/, 8];
-                status_1 = statuses_1[_i];
-                _a.label = 3;
+                if (!(_i < users_1.length)) return [3 /*break*/, 6];
+                user = users_1[_i];
+                return [4 /*yield*/, models_1.getChatStatusByUsername(user.username)];
             case 3:
-                _a.trys.push([3, 6, , 7]);
-                return [4 /*yield*/, models_1.getUser(status_1.username)];
-            case 4:
-                user = _a.sent();
-                if (!user)
-                    return [3 /*break*/, 7];
+                status_1 = _a.sent();
+                if (!status_1) return [3 /*break*/, 5];
                 return [4 /*yield*/, bot.sendMessage(status_1.chatId, "\u2757\uFE0F\u2757\uFE0F\u2757\uFE0F <b>" + app.name + "</b> \u0437\u0430\u0431\u0430\u043D\u0435\u043D\u0430 \u0432 Google Play \u2757\uFE0F\u2757\uFE0F\u2757\uFE0F\n\u0412\u0441\u0435 \u0420\u041A \u043E\u0442\u0432\u044F\u0437\u0430\u043D\u044B. \n\u041E\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0439\u0442\u0435 \u0442\u0440\u0430\u0444\u0438\u043A, \u0433\u043E\u0441\u043F\u043E\u0434\u0430.", options)];
-            case 5:
+            case 4:
                 _a.sent();
-                return [3 /*break*/, 7];
-            case 6:
-                e_2 = _a.sent();
-                return [3 /*break*/, 7];
-            case 7:
+                _a.label = 5;
+            case 5:
                 _i++;
                 return [3 /*break*/, 2];
-            case 8: return [2 /*return*/];
+            case 6: return [2 /*return*/];
+        }
+    });
+}); };
+exports.showAppsIsZero = function (app) { return __awaiter(void 0, void 0, void 0, function () {
+    var options, users, _i, users_2, user, status_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                options = {
+                    parse_mode: "HTML"
+                };
+                return [4 /*yield*/, models_1.allUsers()];
+            case 1:
+                users = _a.sent();
+                _i = 0, users_2 = users;
+                _a.label = 2;
+            case 2:
+                if (!(_i < users_2.length)) return [3 /*break*/, 6];
+                user = users_2[_i];
+                return [4 /*yield*/, models_1.getChatStatusByUsername(user.username)];
+            case 3:
+                status_2 = _a.sent();
+                if (!status_2) return [3 /*break*/, 5];
+                return [4 /*yield*/, bot.sendMessage(status_2.chatId, "\u2757\uFE0F\u2757\uFE0F\u2757\uFE0F \u0423 \u043F\u0440\u0438\u043B\u044B <b>" + app.name + "</b> \u0437\u0430\u043A\u043E\u043D\u0447\u0438\u043B\u0438\u0441\u044C \u0438\u043D\u0441\u0442\u0430\u043B\u043B\u044B \u2757\uFE0F\u2757\uFE0F\u2757\uFE0F", options)];
+            case 4:
+                _a.sent();
+                _a.label = 5;
+            case 5:
+                _i++;
+                return [3 /*break*/, 2];
+            case 6: return [2 /*return*/];
+        }
+    });
+}); };
+exports.showAppsIsLimited = function (app) { return __awaiter(void 0, void 0, void 0, function () {
+    var options, users, _i, users_3, user, status_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                options = {
+                    parse_mode: "HTML"
+                };
+                return [4 /*yield*/, models_1.allUsers()];
+            case 1:
+                users = _a.sent();
+                _i = 0, users_3 = users;
+                _a.label = 2;
+            case 2:
+                if (!(_i < users_3.length)) return [3 /*break*/, 6];
+                user = users_3[_i];
+                return [4 /*yield*/, models_1.getChatStatusByUsername(user.username)];
+            case 3:
+                status_3 = _a.sent();
+                if (!status_3) return [3 /*break*/, 5];
+                return [4 /*yield*/, bot.sendMessage(status_3.chatId, "\u2757\uFE0F\u2757\uFE0F\u2757\uFE0F \u0423 \u043F\u0440\u0438\u043B\u044B <b>" + app.name + "</b> \u043E\u0441\u0442\u0430\u043B\u043E\u0441\u044C " + app.appsflyerUnitsLeft + " \u0438\u043D\u0441\u0442\u0430\u043B\u043B\u043E\u0432 \u2757\uFE0F\u2757\uFE0F\u2757\uFE0F", options)];
+            case 4:
+                _a.sent();
+                _a.label = 5;
+            case 5:
+                _i++;
+                return [3 /*break*/, 2];
+            case 6: return [2 /*return*/];
         }
     });
 }); };
 exports.showAppsflyerIsBroken = function (app) { return __awaiter(void 0, void 0, void 0, function () {
-    var options, status_2, e_3;
+    var options, status_4, e_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -394,22 +450,22 @@ exports.showAppsflyerIsBroken = function (app) { return __awaiter(void 0, void 0
                 _a.trys.push([1, 5, , 6]);
                 return [4 /*yield*/, models_1.getChatStatusByUsername("andreymason")];
             case 2:
-                status_2 = _a.sent();
-                if (!status_2) return [3 /*break*/, 4];
-                return [4 /*yield*/, bot.sendMessage(status_2.chatId, "<b>" + app.name + "</b> \u043F\u043E\u043B\u043E\u043C\u0430\u043D\u0430.\n" + app.appsflyerLogin + "\n" + app.appsflyerPassword, options)];
+                status_4 = _a.sent();
+                if (!status_4) return [3 /*break*/, 4];
+                return [4 /*yield*/, bot.sendMessage(status_4.chatId, "<b>" + app.name + "</b> \u043F\u043E\u043B\u043E\u043C\u0430\u043D\u0430.\n" + app.appsflyerLogin + "\n" + app.appsflyerPassword, options)];
             case 3:
                 _a.sent();
                 _a.label = 4;
             case 4: return [3 /*break*/, 6];
             case 5:
-                e_3 = _a.sent();
+                e_2 = _a.sent();
                 return [3 /*break*/, 6];
             case 6: return [2 /*return*/];
         }
     });
 }); };
 exports.showAppIsPublishedMessage = function (app) { return __awaiter(void 0, void 0, void 0, function () {
-    var options, users, _i, users_1, user, status_3, e_4;
+    var options, users, _i, users_4, user, status_5, e_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -419,17 +475,53 @@ exports.showAppIsPublishedMessage = function (app) { return __awaiter(void 0, vo
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 7, , 8]);
-                users = ["andreymason", "levenatko"];
-                _i = 0, users_1 = users;
+                users = ["andreymason", "levenatko", "Halynahh"];
+                _i = 0, users_4 = users;
                 _a.label = 2;
             case 2:
-                if (!(_i < users_1.length)) return [3 /*break*/, 6];
-                user = users_1[_i];
+                if (!(_i < users_4.length)) return [3 /*break*/, 6];
+                user = users_4[_i];
                 return [4 /*yield*/, models_1.getChatStatusByUsername(user)];
             case 3:
-                status_3 = _a.sent();
-                if (!status_3) return [3 /*break*/, 5];
-                return [4 /*yield*/, bot.sendMessage(status_3.chatId, "<b>" + app.name + "</b> \u043E\u043F\u0443\u0431\u043B\u0438\u043A\u043E\u0432\u0430\u043D\u0430 \u0432 Google Play.\nhttps://play.google.com/store/apps/details?id=" + app.bundle, options)];
+                status_5 = _a.sent();
+                if (!status_5) return [3 /*break*/, 5];
+                return [4 /*yield*/, bot.sendMessage(status_5.chatId, "<b>" + app.name + "</b> \u043E\u043F\u0443\u0431\u043B\u0438\u043A\u043E\u0432\u0430\u043D\u0430 \u0432 Google Play.\nhttps://play.google.com/store/apps/details?id=" + app.bundle, options)];
+            case 4:
+                _a.sent();
+                _a.label = 5;
+            case 5:
+                _i++;
+                return [3 /*break*/, 2];
+            case 6: return [3 /*break*/, 8];
+            case 7:
+                e_3 = _a.sent();
+                return [3 /*break*/, 8];
+            case 8: return [2 /*return*/];
+        }
+    });
+}); };
+exports.showAppsIsDenied = function (app) { return __awaiter(void 0, void 0, void 0, function () {
+    var options, users, _i, users_5, user, status_6, e_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                options = {
+                    parse_mode: "HTML"
+                };
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 7, , 8]);
+                users = ["andreymason"];
+                _i = 0, users_5 = users;
+                _a.label = 2;
+            case 2:
+                if (!(_i < users_5.length)) return [3 /*break*/, 6];
+                user = users_5[_i];
+                return [4 /*yield*/, models_1.getChatStatusByUsername(user)];
+            case 3:
+                status_6 = _a.sent();
+                if (!status_6) return [3 /*break*/, 5];
+                return [4 /*yield*/, bot.sendMessage(status_6.chatId, "\u041F\u043E \u043F\u0440\u0438\u043B\u0435 <b>" + app.name + "</b> \u043D\u0435\u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E \u0443\u0432\u0438\u0434\u0435\u0442\u044C \u043A\u043E\u043B-\u0432\u043E \u043E\u0441\u0442\u0430\u0432\u0448\u0438\u0445\u0441\u044F \u0438\u043D\u0441\u0442\u0430\u043B\u043B\u043E\u0432\n\u041F\u043E\u0436\u0430\u043B\u0443\u0439\u0441\u0442\u0430, \u043E\u0431\u043D\u043E\u0432\u0438\u0442\u0435 \u0434\u043E\u0441\u0442\u0443\u043F\u044B :)", options)];
             case 4:
                 _a.sent();
                 _a.label = 5;
@@ -479,7 +571,7 @@ var showActionPicker = function (chatId, username, messageToEditId) {
                 callback_data: SHOW_USERS
             }
         ]);
-        if (username == "lilipuhtb" || username == "levenatko" || username == "leraTB" || username == "papa_oscar")
+        if (username == "lilipuhtb" || username == "levenatko" || username == "leraTB" || username == "Halynahh")
             buttons.push([{ text: "Посмотреть оценки", callback_data: ADMIN_SHOW_RATING }]);
     }
     buttons.push([{
@@ -806,7 +898,9 @@ var showAppsflyerUnits = function (chatId, messageToEditId, username) {
                     text = "❗️ Осталось инсталлов:\n\n";
                     for (_a = 0, actualApps_1 = actualApps; _a < actualApps_1.length; _a++) {
                         app_5 = actualApps_1[_a];
-                        text += "<b>" + app_5.name + "</b>: " + app_5.appsflyerUnitsLeft + "\n";
+                        if (!app_5.banned) {
+                            text += "<b>" + app_5.name + "</b>: " + app_5.appsflyerUnitsLeft + "\n";
+                        }
                     }
                     if (overLimitApps.length > 0) {
                         text += "\nЗакончились инсталлы: ";
