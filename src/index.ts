@@ -1,4 +1,4 @@
-const API_KEY = "1645312068:AAHp1QfOb61mqvvVQA0olqpMUyKx2G1aLw8"
+const API_KEY = "1645312068:AAEIFKuerNkKh-koJy20R3XIUPNQqeP9O8U"
 const PORT = 4012
 const MONGO = "mongodb://127.0.0.1:27017/tb"
 //const MONGO = "mongodb://admin:fweifjwoi234sa@127.0.0.1:27017/tb"
@@ -8,7 +8,7 @@ import { createServer } from 'http';
 import { connect } from 'mongoose';
 import { AddressInfo } from 'net';
 import { startCheckerThread } from './app_checker';
-import { addRequest, EntryType, FacebookQueueEntry, FacebookResult, initFacebook } from './automatizer';
+import { addRequest, EntryType, FacebookQueueEntry, FacebookResult, initFacebook, startAppsflyerThread } from './automatizer';
 import { Router as InstallLogRouter } from './install_log';
 import { addApp, addUsers, allUsers, allStatuses, App, createChatStatus, getApp, getApps, getChatStatusByChatId, getChatStatusByUsername, getUser, getUsersData, IApp, IChatStatus, IDLE, IUser, PROCESSING_IDS, removeApp, removeUsers, updateChatApp, updateChatStatus, updateChatUploadMessageId, WAITING_FOR_APP_ADD, WAITING_FOR_IDS_ADD, WAITING_FOR_IDS_REMOVE, WAITING_FOR_REMOVE_USERNAMES, WAITING_FOR_USERNAMES } from './models';
 import e = require('express');
@@ -771,3 +771,4 @@ initFacebook().then(() => console.log("Selenium initialized successfully."), (e)
 
 // testApps().then(() => console.log(), (e) => console.error(e))
 startCheckerThread()
+startAppsflyerThread()

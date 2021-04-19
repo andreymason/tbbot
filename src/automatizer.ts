@@ -31,7 +31,7 @@ try {
         .setFirefoxOptions(new firefox.Options().headless())
         .build()
 
-    checkAppsflyer()
+    //checkAppsflyer()
 
 } catch (e) {
     console.log(e)
@@ -98,6 +98,7 @@ export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0
         processing = false
         entry.callback(null)
         console.log("Can't open advanced settings.")
+console.log(e)
         checkQueue()
     }
 
@@ -377,7 +378,7 @@ export async function checkAppsflyer() {
         if (app.banned || !app.published || !app.appsflyerLogin) {
             continue
         } else {
-            console.log(`${app}`)
+            //console.log(`${app}`)
         }
         
         let success = false

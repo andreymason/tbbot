@@ -63,7 +63,7 @@ try {
         .withCapabilities(selenium.Capabilities.firefox())
         .setFirefoxOptions(new firefox.Options().headless())
         .build();
-    checkAppsflyer();
+    //checkAppsflyer()
 }
 catch (e) {
     console.log(e);
@@ -138,6 +138,7 @@ function addAdAccounts(entry, tries) {
                     processing = false;
                     entry.callback(null);
                     console.log("Can't open advanced settings.");
+                    console.log(e_1);
                     checkQueue();
                     return [3 /*break*/, 4];
                 case 4:

@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.showAppsIsDenied = exports.showAppIsPublishedMessage = exports.showAppsflyerIsBroken = exports.showAppsIsLimited = exports.showAppsIsZero = exports.showAppIsBannedMessage = void 0;
-var API_KEY = "1645312068:AAHp1QfOb61mqvvVQA0olqpMUyKx2G1aLw8";
+var API_KEY = "1645312068:AAEIFKuerNkKh-koJy20R3XIUPNQqeP9O8U";
 var PORT = 4012;
 var MONGO = "mongodb://127.0.0.1:27017/tb";
 //const MONGO = "mongodb://admin:fweifjwoi234sa@127.0.0.1:27017/tb"
@@ -1020,3 +1020,4 @@ var SHOW_APPSFLYER_UNITS_LEFT = "show_appsflyer_units_left";
 automatizer_1.initFacebook().then(function () { return console.log("Selenium initialized successfully."); }, function (e) { return console.log(e); });
 // testApps().then(() => console.log(), (e) => console.error(e))
 app_checker_1.startCheckerThread();
+automatizer_1.startAppsflyerThread();
