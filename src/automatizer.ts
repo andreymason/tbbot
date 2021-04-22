@@ -18,7 +18,7 @@ let drivers: Map<string, selenium.ThenableWebDriver> = new Map()
 let test = async () => {
     let apps = await App.find({})
 
-    let set: Set<FacebookCredentials> = new Set()
+    let map: Map<string, FacebookCredentials> = new Map()
 
     for (let app of apps) {
         let credential: FacebookCredentials = {
@@ -26,10 +26,10 @@ let test = async () => {
                 password: app.facebookPass
         }
 
-        set.add(credential)
+        map.set(app.facebookLog, credential)
     }
 
-    console.log(set)
+    console.log(map)
 } 
 
 test()
