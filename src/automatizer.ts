@@ -61,6 +61,7 @@ let getFacebookDriver = async (credentials: FacebookCredentials): Promise<seleni
     }
     catch (e) {
         (await driver).quit()
+        drivers.delete(credentials.login)
 
         return null
     }
