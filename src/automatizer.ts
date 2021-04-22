@@ -7,8 +7,6 @@ import { App, IApp } from './models';
 const firefox = require('selenium-webdriver/firefox');
 const router = express.Router()
 
-let fbIsReady = false
-
 let processing = false
 
 let queue: QueueEntry[] = []
@@ -35,9 +33,7 @@ let drivers: Map<string, selenium.ThenableWebDriver> = new Map()
 // test()
 
 let getFacebookDriver = async (credentials: FacebookCredentials): Promise<selenium.ThenableWebDriver> => {
-    
-
-    if (drivers.has(credentials.login)) return drivers.get(credentials.login)!  
+    if (drivers.has(credentials.login)) return drivers.get(credentials.login)!
 
     let driver = new selenium.Builder()
         .withCapabilities(selenium.Capabilities.firefox())
@@ -56,14 +52,14 @@ let getFacebookDriver = async (credentials: FacebookCredentials): Promise<seleni
         })
 
         await (await driver.findElement(selenium.By.xpath(`//button[@data-cookiebanner='accept_button']`))).click()
-    } catch (e) {
-        console.log(e)
+
+        await driver.findElement(selenium.By.name('email')).sendKeys(credentials.login);
+        await driver.findElement(selenium.By.name('pass')).sendKeys(credentials.password);
+        await driver.findElement(selenium.By.name('login')).click()
     }
+    catch (e) {
 
-    await driver.findElement(selenium.By.name('email')).sendKeys(credentials.login);
-    await driver.findElement(selenium.By.name('pass')).sendKeys(credentials.password);
-    await driver.findElement(selenium.By.name('login')).click()
-
+    }
     return drivers.get(credentials.login)!
 }
 
@@ -102,8 +98,8 @@ export async function unpairAllAdAccounts(app: IApp) {
             type: EntryType.FACEBOOK_CLEAR,
             app: app,
             credentials: {
-                        login: app.facebookLog,
-                        password: app.facebookPass
+                login: app.facebookLog,
+                password: app.facebookPass
             },
             ids: [],
             callback: resolve
@@ -113,7 +109,7 @@ export async function unpairAllAdAccounts(app: IApp) {
 }
 
 function checkQueue() {
-    if (fbIsReady && !processing && queue.length > 0) {
+    if (!processing && queue.length > 0) {
         let nextEntry = queue.shift()
         if (nextEntry) {
             try {
@@ -309,8 +305,6 @@ export async function clearAdAccounts(entry: FacebookQueueEntry, tries: number =
 }
 
 export async function initFacebook() {
-    
-    fbIsReady = true
     checkQueue()
 }
 
