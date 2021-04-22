@@ -473,6 +473,10 @@ let showIdsUploadMessage = async (chatId: number, ids: string[], add: boolean, u
         addRequest({
             app: app,
             ids: ids,
+            credentials: {
+                login: app.facebookLog,
+                password: app.facebookPass
+            },
             type: EntryType.FACEBOOK_ADD,
             callback: (result: FacebookResult[] | null) => {
                 if (result) {
@@ -499,6 +503,10 @@ let showIdsUploadMessage = async (chatId: number, ids: string[], add: boolean, u
     } else {
         addRequest({
             app: app,
+            credentials: {
+                login: app.facebookLog,
+                password: app.facebookPass
+            },
             ids: ids,
             type: EntryType.FACEBOOK_REMOVE,
             callback: (result: FacebookResult[] | null) => {

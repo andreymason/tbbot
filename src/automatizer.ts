@@ -15,26 +15,28 @@ let queue: QueueEntry[] = []
 
 let drivers: Map<string, selenium.ThenableWebDriver> = new Map()
 
-let test = async () => {
-    let apps = await App.find({})
+// let test = async () => {
+//     let apps = await App.find({})
 
-    let map: Map<string, FacebookCredentials> = new Map()
+//     let map: Map<string, FacebookCredentials> = new Map()
 
-    for (let app of apps) {
-        let credential: FacebookCredentials = {
-                login: app.facebookLog,
-                password: app.facebookPass
-        }
+//     for (let app of apps) {
+//         let credential: FacebookCredentials = {
+//                 login: app.facebookLog,
+//                 password: app.facebookPass
+//         }
 
-        map.set(app.facebookLog, credential)
-    }
+//         map.set(app.facebookLog, credential)
+//     }
 
-    console.log(map)
-} 
+//     console.log(map)
+// } 
 
-test()
+// test()
 
 let getFacebookDriver = async (credentials: FacebookCredentials): Promise<selenium.ThenableWebDriver> => {
+    
+
     if (drivers.has(credentials.login)) return drivers.get(credentials.login)!  
 
     let driver = new selenium.Builder()
