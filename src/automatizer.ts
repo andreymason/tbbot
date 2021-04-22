@@ -32,7 +32,7 @@ let drivers: Map<string, selenium.ThenableWebDriver> = new Map()
 
 // test()
 
-let getFacebookDriver = async (credentials: FacebookCredentials): Promise<selenium.ThenableWebDriver> => {
+let getFacebookDriver = async (credentials: FacebookCredentials): Promise<selenium.ThenableWebDriver | null> => {
     if (drivers.has(credentials.login)) return drivers.get(credentials.login)!
 
     let driver = new selenium.Builder()
@@ -56,14 +56,16 @@ let getFacebookDriver = async (credentials: FacebookCredentials): Promise<seleni
         await driver.findElement(selenium.By.name('email')).sendKeys(credentials.login);
         await driver.findElement(selenium.By.name('pass')).sendKeys(credentials.password);
         await driver.findElement(selenium.By.name('login')).click()
+
+        await (await driver).sleep(3000)
     }
     catch (e) {
-            
+        (await driver).quit()
+
+        return null
     }
 
-    await (await driver).sleep(3000)
-
-    return drivers.get(credentials.login)!
+    return driver
 }
 
 let appsflyerWebdriver: selenium.ThenableWebDriver
@@ -87,12 +89,12 @@ try {
 // App.findOneAndUpdate({ bundle: "com.crzbanana.crz" }, { appsflyerLogin: "crzbanana@yandex.ru", appsflyerPassword: "Qwerty1234!" }).exec()
 // App.findOneAndUpdate({ bundle: "com.egyptdynas" }, { appsflyerLogin: "boombasticegypt@yandex.com", appsflyerPassword: "Qwerty1234!" }).exec()
 
-export function addRequest(entry: QueueEntry) {
+export async function addRequest(entry: QueueEntry) {
     queue.push(entry)
 
     console.log(`Added entry, ${queue.length} entries total.`)
 
-    checkQueue()
+    await checkQueue()
 }
 
 export async function unpairAllAdAccounts(app: IApp) {
@@ -115,20 +117,23 @@ async function checkQueue() {
     if (!processing && queue.length > 0) {
         let nextEntry = queue.shift()
         if (nextEntry) {
-            
+
             try {
-                let driver : selenium.WebDriver
+                let driver: selenium.WebDriver | null
                 switch (nextEntry.type) {
                     case EntryType.FACEBOOK_ADD:
                         driver = await getFacebookDriver((nextEntry as FacebookQueueEntry).credentials)
+                        if (!driver) return
                         addAdAccounts(nextEntry as FacebookQueueEntry, driver)
                         break;
                     case EntryType.FACEBOOK_REMOVE:
-                        driver = await getFacebookDriver((nextEntry as FacebookQueueEntry).credentials) 
+                        driver = await getFacebookDriver((nextEntry as FacebookQueueEntry).credentials)
+                        if (!driver) return
                         removeAdAccounts(nextEntry as FacebookQueueEntry, driver)
                         break;
                     case EntryType.FACEBOOK_CLEAR:
                         driver = await getFacebookDriver((nextEntry as FacebookQueueEntry).credentials)
+                        if (!driver) return
                         clearAdAccounts(nextEntry as FacebookQueueEntry, driver)
                         break;
                 }
@@ -151,7 +156,7 @@ export async function addAdAccounts(entry: FacebookQueueEntry, driver: selenium.
         entry.callback(null)
         console.log("Can't open advanced settings.")
         console.log(e)
-        checkQueue()
+        await checkQueue()
     }
 
     let parentDiv = null
@@ -163,7 +168,7 @@ export async function addAdAccounts(entry: FacebookQueueEntry, driver: selenium.
         processing = false
         entry.callback(null)
         console.log("Can't find input.")
-        checkQueue()
+        await checkQueue()
     }
 
     let result: FacebookResult[] = []
@@ -212,7 +217,7 @@ export async function addAdAccounts(entry: FacebookQueueEntry, driver: selenium.
     entry.callback(result)
 
     processing = false
-    checkQueue()
+    await checkQueue()
 }
 
 export async function removeAdAccounts(entry: FacebookQueueEntry, driver: selenium.WebDriver, tries: number = 0) {
@@ -225,7 +230,7 @@ export async function removeAdAccounts(entry: FacebookQueueEntry, driver: seleni
         processing = false
         entry.callback(null)
         console.log("Can't open advanced settings.")
-        checkQueue()
+        await checkQueue()
     }
 
     let result: FacebookResult[] = []
@@ -261,7 +266,7 @@ export async function removeAdAccounts(entry: FacebookQueueEntry, driver: seleni
     entry.callback(result)
 
     processing = false
-    checkQueue()
+    await checkQueue()
 }
 
 export async function clearAdAccounts(entry: FacebookQueueEntry, driver: selenium.WebDriver, tries: number = 0) {
@@ -274,7 +279,7 @@ export async function clearAdAccounts(entry: FacebookQueueEntry, driver: seleniu
         processing = false
         entry.callback(null)
         console.log("Can't open advanced settings.")
-        checkQueue()
+        await checkQueue()
     }
 
     let result: FacebookResult[] = []
@@ -304,11 +309,7 @@ export async function clearAdAccounts(entry: FacebookQueueEntry, driver: seleniu
     entry.callback(result)
 
     processing = false
-    checkQueue()
-}
-
-export async function initFacebook() {
-    checkQueue()
+    await checkQueue()
 }
 
 export async function checkAppsflyerUnits(app: IApp) {

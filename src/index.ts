@@ -8,7 +8,7 @@ import { createServer } from 'http';
 import { connect } from 'mongoose';
 import { AddressInfo } from 'net';
 import { startCheckerThread } from './app_checker';
-import { addRequest, EntryType, FacebookQueueEntry, FacebookResult, initFacebook, startAppsflyerThread } from './automatizer';
+import { addRequest, EntryType, FacebookQueueEntry, FacebookResult, startAppsflyerThread } from './automatizer';
 import { Router as InstallLogRouter } from './install_log';
 import { addApp, addUsers, allUsers, App, createChatStatus, getApp, getApps, getChatStatusByChatId, getChatStatusByUsername, getUser, getUsersData, IApp, IChatStatus, IDLE, IUser, PROCESSING_IDS, removeApp, removeUsers, updateChatApp, updateChatStatus, updateChatUploadMessageId, WAITING_FOR_APP_ADD, WAITING_FOR_IDS_ADD, WAITING_FOR_IDS_REMOVE, WAITING_FOR_REMOVE_USERNAMES, WAITING_FOR_USERNAMES } from './models';
 import e = require('express');
@@ -774,8 +774,6 @@ const ADMIN_REMOVE_APP = "admin_remove_app"
 const ADMIN_SHOW_RATING = "admin_show_rating"
 
 const SHOW_APPSFLYER_UNITS_LEFT = "show_appsflyer_units_left"
-
-initFacebook().then(() => console.log("Selenium initialized successfully."), (e) => console.log(e))
 
 // testApps().then(() => console.log(), (e) => console.error(e))
 startCheckerThread()
