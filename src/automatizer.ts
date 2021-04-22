@@ -1,16 +1,11 @@
 import * as express from "express";
 import * as selenium from 'selenium-webdriver';
-import { showAppsflyerIsBroken } from ".";
-import { showAppsIsZero } from ".";
-import { showAppsIsLimited, showAppsIsDenied } from ".";
-
+import { showAppsflyerIsBroken, showAppsIsDenied, showAppsIsLimited, showAppsIsZero } from ".";
 // import { showAppsflyerIsBroken } from ".";
 import { App, IApp } from './models';
+
 const firefox = require('selenium-webdriver/firefox');
 const router = express.Router()
-
-const FACEBOOK_USERNAME = "pazyukrus84@gmail.com"
-const FACEBOOK_PASSWORD = "ABaKaNaNa20"
 
 let fbIsReady = false
 
@@ -18,13 +13,60 @@ let processing = false
 
 let queue: QueueEntry[] = []
 
-let facebookWebdriver: selenium.ThenableWebDriver
-let appsflyerWebdriver: selenium.ThenableWebDriver
-try {
-    facebookWebdriver = new selenium.Builder()
+let drivers: Map<string, selenium.ThenableWebDriver> = new Map()
+
+let test = async () => {
+    let apps = await App.find({})
+
+    let set: Set<FacebookCredentials> = new Set()
+
+    for (let app of apps) {
+        let credential: FacebookCredentials = {
+                login: app.facebookLog,
+                password: app.facebookPass
+        }
+
+        set.add(credential)
+    }
+
+    console.log(set)
+} 
+
+test()
+
+let getFacebookDriver = async (credentials: FacebookCredentials): Promise<selenium.ThenableWebDriver> => {
+    if (drivers.has(credentials.login)) return drivers.get(credentials.login)!  
+
+    let driver = new selenium.Builder()
         .withCapabilities(selenium.Capabilities.firefox())
         .setFirefoxOptions(new firefox.Options().headless())
         .build()
+
+    drivers.set(credentials.login, driver)
+
+    console.log(`Started FB initialization for ${credentials.login}`)
+    try {
+        await driver.get("https://developers.facebook.com/apps/")
+        console.log("Loaded developers.facebook.com/apps")
+
+        await driver.wait(() => {
+            return selenium.until.elementLocated(selenium.By.xpath(`//button[@data-cookiebanner='accept_button']`))
+        })
+
+        await (await driver.findElement(selenium.By.xpath(`//button[@data-cookiebanner='accept_button']`))).click()
+    } catch (e) {
+        console.log(e)
+    }
+
+    await driver.findElement(selenium.By.name('email')).sendKeys(credentials.login);
+    await driver.findElement(selenium.By.name('pass')).sendKeys(credentials.password);
+    await driver.findElement(selenium.By.name('login')).click()
+
+    return drivers.get(credentials.login)!
+}
+
+let appsflyerWebdriver: selenium.ThenableWebDriver
+try {
 
     appsflyerWebdriver = new selenium.Builder()
         .withCapabilities(selenium.Capabilities.firefox())
@@ -57,6 +99,10 @@ export async function unpairAllAdAccounts(app: IApp) {
         addRequest({
             type: EntryType.FACEBOOK_CLEAR,
             app: app,
+            credentials: {
+                        login: app.facebookLog,
+                        password: app.facebookPass
+            },
             ids: [],
             callback: resolve
         } as FacebookQueueEntry)
@@ -88,24 +134,25 @@ function checkQueue() {
 }
 
 export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0) {
-
     processing = true
 
+    let driver = await getFacebookDriver(entry.credentials)
+
     try {
-        await facebookWebdriver.get(`https://developers.facebook.com/apps/${entry.app.facebookId}/settings/advanced/`)
+        await driver.get(`https://developers.facebook.com/apps/${entry.app.facebookId}/settings/advanced/`)
     }
     catch (e) {
         processing = false
         entry.callback(null)
         console.log("Can't open advanced settings.")
-console.log(e)
+        console.log(e)
         checkQueue()
     }
 
     let parentDiv = null
     let input = null
     try {
-        parentDiv = await facebookWebdriver.findElement(selenium.By.id('advertiser_account_ids'))
+        parentDiv = await driver.findElement(selenium.By.id('advertiser_account_ids'))
         input = await parentDiv.findElement(selenium.By.css(`div>div>div>span>label>input`))
     } catch (e) {
         processing = false
@@ -130,22 +177,22 @@ console.log(e)
                 }
 
                 await input.sendKeys(accountId)
-                await facebookWebdriver.wait(() => {
+                await driver.wait(() => {
                     return selenium.until.elementLocated(selenium.By.xpath(`//span[text()[contains(., '${accountId}')]]`))
                 })
 
-                await facebookWebdriver.sleep(600)
+                await driver.sleep(600)
                 await input.sendKeys(selenium.Key.ENTER)
 
-                await facebookWebdriver.wait(() => {
+                await driver.wait(() => {
                     return selenium.until.elementLocated(selenium.By.xpath(`//span[@title='${accountId}']`))
                 })
 
                 result.push({ id: accountId, success: true })
-                await facebookWebdriver.sleep(300)
+                await driver.sleep(300)
             }
 
-        await (await facebookWebdriver.findElement(selenium.By.name(`save_changes`))).click()
+        await (await driver.findElement(selenium.By.name(`save_changes`))).click()
     } catch (e) {
         console.log(e)
         if (tries >= 3) {
@@ -166,8 +213,10 @@ console.log(e)
 export async function removeAdAccounts(entry: FacebookQueueEntry, tries: number = 0) {
     processing = true
 
+    let driver = await getFacebookDriver(entry.credentials)
+
     try {
-        await facebookWebdriver.get(`https://developers.facebook.com/apps/${entry.app.facebookId}/settings/advanced/`)
+        await driver.get(`https://developers.facebook.com/apps/${entry.app.facebookId}/settings/advanced/`)
     }
     catch (e) {
         processing = false
@@ -181,7 +230,7 @@ export async function removeAdAccounts(entry: FacebookQueueEntry, tries: number 
     try {
         for (var accountId of entry.ids) {
             try {
-                let span = await facebookWebdriver.findElement(selenium.By.xpath(`//span[@title='${accountId}']`))
+                let span = await driver.findElement(selenium.By.xpath(`//span[@title='${accountId}']`))
                 let button = await span.findElement(selenium.By.xpath("./../span[2]/button"))
 
                 await button.sendKeys(selenium.Key.ENTER)
@@ -191,10 +240,10 @@ export async function removeAdAccounts(entry: FacebookQueueEntry, tries: number 
             }
 
             result.push({ id: accountId, success: true })
-            await facebookWebdriver.sleep(300)
+            await driver.sleep(300)
         }
 
-        await (await facebookWebdriver.findElement(selenium.By.name(`save_changes`))).click()
+        await (await driver.findElement(selenium.By.name(`save_changes`))).click()
 
     } catch (e) {
         if (tries >= 3) {
@@ -215,8 +264,10 @@ export async function removeAdAccounts(entry: FacebookQueueEntry, tries: number 
 export async function clearAdAccounts(entry: FacebookQueueEntry, tries: number = 0) {
     processing = true
 
+    let driver = await getFacebookDriver(entry.credentials)
+
     try {
-        await facebookWebdriver.get(`https://developers.facebook.com/apps/${entry.app.facebookId}/settings/advanced/`)
+        await driver.get(`https://developers.facebook.com/apps/${entry.app.facebookId}/settings/advanced/`)
     }
     catch (e) {
         processing = false
@@ -228,16 +279,16 @@ export async function clearAdAccounts(entry: FacebookQueueEntry, tries: number =
     let result: FacebookResult[] = []
 
     try {
-        await facebookWebdriver.wait(() => {
+        await driver.wait(() => {
             return selenium.until.elementLocated(selenium.By.xpath(`//div[contains(@class,'_59_n')]`))
         })
 
-        let buttons = await facebookWebdriver.findElements(selenium.By.xpath("//button[contains(@class,'_1z6_ _50zy _50zz _50z- _5upp _42ft')]"))
+        let buttons = await driver.findElements(selenium.By.xpath("//button[contains(@class,'_1z6_ _50zy _50zz _50z- _5upp _42ft')]"))
         for (let button of buttons) {
-            await facebookWebdriver.executeScript("arguments[0].click()", button)
+            await driver.executeScript("arguments[0].click()", button)
         }
 
-        await (await facebookWebdriver.findElement(selenium.By.name(`save_changes`))).click()
+        await (await driver.findElement(selenium.By.name(`save_changes`))).click()
 
     } catch (e) {
         if (tries >= 3) {
@@ -256,33 +307,13 @@ export async function clearAdAccounts(entry: FacebookQueueEntry, tries: number =
 }
 
 export async function initFacebook() {
-console.log("Started FB initialization")
-try{
-    await facebookWebdriver.get("https://developers.facebook.com/apps/")
-console.log("Loaded developers.facebook.com/apps")
     
-        await facebookWebdriver.wait(() => {
-            return selenium.until.elementLocated(selenium.By.xpath(`//button[@data-cookiebanner='accept_button']`))
-        })
-
-        await (await facebookWebdriver.findElement(selenium.By.xpath(`//button[@data-cookiebanner='accept_button']`))).click()
-    } catch (e) { 
-	console.log(e)
-}
-
-    await facebookWebdriver.findElement(selenium.By.name('email')).sendKeys(FACEBOOK_USERNAME);
-    await facebookWebdriver.findElement(selenium.By.name('pass')).sendKeys(FACEBOOK_PASSWORD);
-    await facebookWebdriver.findElement(selenium.By.name('login')).click()
-
-console.log("Authenticated FB")
-
     fbIsReady = true
     checkQueue()
 }
 
 export async function checkAppsflyerUnits(app: IApp) {
     try {
-
         await appsflyerWebdriver.get("https://hq1.appsflyer.com/auth/login")
 
         await appsflyerWebdriver.findElement(selenium.By.id('user-email')).sendKeys(app.appsflyerLogin);
@@ -295,25 +326,25 @@ export async function checkAppsflyerUnits(app: IApp) {
         let pre = await appsflyerWebdriver.executeScript(`return document.getElementById('json').innerHTML`) as string
 
         let appObject = JSON.parse(pre)
-        
+
         let plan = appObject.currentPackage.name
 
         let remaining_units = 0
 
-        if(appObject.currentPackage.remaining_units == null) {
+        if (appObject.currentPackage.remaining_units == null) {
             remaining_units = 0
         }
         else {
             remaining_units = parseInt(appObject.currentPackage.remaining_units)
         }
 
-        if(plan == "Zero Plan" && app.appsStatus && !app.banned) {
+        if (plan == "Zero Plan" && app.appsStatus && !app.banned) {
             let res = await appsflyerWebdriver.get("https://integr-testing.site/tb/appsChecker/index.php?bundle=" + app.bundle)
-            
+
             let textOfResult = await appsflyerWebdriver.findElement(selenium.By.id('plan')).getText()
-            
+
             await App.updateOne({ _id: app._id }, { appsStatus: false }).exec()
-            
+
             console.log(`${textOfResult}`)
 
             await showAppsIsZero(app)
@@ -323,13 +354,13 @@ export async function checkAppsflyerUnits(app: IApp) {
 
         await App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: remaining_units }).exec()
 
-        if(app.appsflyerUnitsLeft <= 2000 && app.appsStatus && !app.banned && plan != "Zero Plan") {
+        if (app.appsflyerUnitsLeft <= 2000 && app.appsStatus && !app.banned && plan != "Zero Plan") {
             await showAppsIsLimited(app)
         }
 
     }
-    catch (e) {   
-        if(!app.banned)
+    catch (e) {
+        if (!app.banned)
             showAppsIsDenied(app)
     }
 }
@@ -349,8 +380,13 @@ export interface AppsflyerQueueEntry extends QueueEntry {
     callback: (result: AppsflyerResult) => void
 }
 
+export interface FacebookCredentials {
+    login: string,
+    password: string
+}
 export interface FacebookQueueEntry extends QueueEntry {
-    ids: string[]
+    ids: string[],
+    credentials: FacebookCredentials
     callback: (result: FacebookResult[] | null) => void
 }
 
@@ -380,11 +416,11 @@ export async function checkAppsflyer() {
         } else {
             //console.log(`${app}`)
         }
-        
+
         let success = false
         for (let index = 0; index < 3; index++) {
             try {
-                if(!app.banned) {
+                if (!app.banned) {
                     await checkAppsflyerUnits(app)
                 }
 
@@ -400,7 +436,7 @@ export async function checkAppsflyer() {
             await showAppsflyerIsBroken(app)
             await App.updateOne({ _id: app._id }, { appsflyerUnitsLeft: 0 }).exec()
         }
-        
+
     }
 
     console.log("Finished AppsFlyer checking")

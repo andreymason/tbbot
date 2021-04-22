@@ -10,7 +10,7 @@ import { AddressInfo } from 'net';
 import { startCheckerThread } from './app_checker';
 import { addRequest, EntryType, FacebookQueueEntry, FacebookResult, initFacebook, startAppsflyerThread } from './automatizer';
 import { Router as InstallLogRouter } from './install_log';
-import { addApp, addUsers, allUsers, allStatuses, App, createChatStatus, getApp, getApps, getChatStatusByChatId, getChatStatusByUsername, getUser, getUsersData, IApp, IChatStatus, IDLE, IUser, PROCESSING_IDS, removeApp, removeUsers, updateChatApp, updateChatStatus, updateChatUploadMessageId, WAITING_FOR_APP_ADD, WAITING_FOR_IDS_ADD, WAITING_FOR_IDS_REMOVE, WAITING_FOR_REMOVE_USERNAMES, WAITING_FOR_USERNAMES } from './models';
+import { addApp, addUsers, allUsers, App, createChatStatus, getApp, getApps, getChatStatusByChatId, getChatStatusByUsername, getUser, getUsersData, IApp, IChatStatus, IDLE, IUser, PROCESSING_IDS, removeApp, removeUsers, updateChatApp, updateChatStatus, updateChatUploadMessageId, WAITING_FOR_APP_ADD, WAITING_FOR_IDS_ADD, WAITING_FOR_IDS_REMOVE, WAITING_FOR_REMOVE_USERNAMES, WAITING_FOR_USERNAMES } from './models';
 import e = require('express');
 
 const logger = require('morgan');
@@ -189,7 +189,7 @@ bot.onText(RegExp(""), async (msg) => {
                     console.log(e)
                 }
 				
-				let found = await App.findOne({bundle: app.bundle})
+				let found = await App.findOne({bundle: app?.bundle})
 				
 				console.log({
 					initial: app,

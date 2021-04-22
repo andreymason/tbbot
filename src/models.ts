@@ -157,15 +157,15 @@ const AppSchema = new Schema({
         default: true
     },
     appsStatus: {
-        type: Boolean, 
+        type: Boolean,
         default: true
-    }, 
+    },
     facebookPass: {
-        type: String, 
+        type: String,
         default: "ABaKaNaNa20"
-    }, 
+    },
     facebookLog: {
-        type: String, 
+        type: String,
         default: "pazyukrus84@gmail.com"
     }
 })
