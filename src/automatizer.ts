@@ -152,8 +152,9 @@ export async function addAdAccounts(entry: FacebookQueueEntry, driver: selenium.
     processing = true
 
     try {
-        console.log("Going to the advanced")
-        await driver.get(`https://developers.facebook.com/apps/${entry.app.facebookId}/settings/advanced/`)
+        let url = `https://developers.facebook.com/apps/${entry.app.facebookId}/settings/advanced/`
+        console.log(`Going to the advanced: ${url}`)
+        await driver.get(url)
     }
     catch (e) {
         processing = false
