@@ -39,7 +39,7 @@ let getFacebookDriver = async (credentials: FacebookCredentials): Promise<seleni
 
     let driver = new selenium.Builder()
         .withCapabilities(selenium.Capabilities.firefox())
-        // .setFirefoxOptions(new firefox.Options().headless())
+        .setFirefoxOptions(new firefox.Options().headless())
         .build()
 
     drivers.set(credentials.login, driver)
