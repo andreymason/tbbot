@@ -160,7 +160,6 @@ export async function addAdAccounts(entry: FacebookQueueEntry, driver: selenium.
         processing = false
         entry.callback(null)
         console.log("Can't open advanced settings.")
-        console.log(e)
         await checkQueue()
     }
 
