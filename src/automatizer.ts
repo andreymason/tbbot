@@ -32,6 +32,8 @@ let drivers: Map<string, selenium.ThenableWebDriver> = new Map()
 
 // test()
 
+const MAX_TRIES = 1
+
 let getFacebookDriver = async (credentials: FacebookCredentials): Promise<selenium.ThenableWebDriver | null> => {
     if (drivers.has(credentials.login)) return drivers.get(credentials.login)!
 
@@ -207,11 +209,11 @@ export async function addAdAccounts(entry: FacebookQueueEntry, driver: selenium.
         await (await driver.findElement(selenium.By.name(`save_changes`))).click()
     } catch (e) {
         console.log(e)
-        if (tries >= 3) {
+        if (tries >= MAX_TRIES) {
             processing = false
             entry.callback(null)
         } else {
-            addAdAccounts(entry, driver, tries + 1)
+            await addAdAccounts(entry, driver, tries + 1)
         }
         return
     }
@@ -256,11 +258,11 @@ export async function removeAdAccounts(entry: FacebookQueueEntry, driver: seleni
         await (await driver.findElement(selenium.By.name(`save_changes`))).click()
 
     } catch (e) {
-        if (tries >= 3) {
+        if (tries >= MAX_TRIES) {
             processing = false
             entry.callback(null)
         } else {
-            removeAdAccounts(entry, driver, tries + 1)
+            await removeAdAccounts(entry, driver, tries + 1)
         }
         return
     }
@@ -299,11 +301,11 @@ export async function clearAdAccounts(entry: FacebookQueueEntry, driver: seleniu
         await (await driver.findElement(selenium.By.name(`save_changes`))).click()
 
     } catch (e) {
-        if (tries >= 3) {
+        if (tries >= MAX_TRIES) {
             processing = false
             entry.callback(null)
         } else {
-            clearAdAccounts(entry, driver, tries + 1)
+            await clearAdAccounts(entry, driver, tries + 1)
         }
         return
     }
