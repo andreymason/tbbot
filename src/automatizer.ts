@@ -58,7 +58,7 @@ let getFacebookDriver = async (credentials: FacebookCredentials): Promise<seleni
         await driver.findElement(selenium.By.name('login')).click()
     }
     catch (e) {
-
+            
     }
     return drivers.get(credentials.login)!
 }
@@ -108,20 +108,25 @@ export async function unpairAllAdAccounts(app: IApp) {
 
 }
 
-function checkQueue() {
+async function checkQueue() {
     if (!processing && queue.length > 0) {
         let nextEntry = queue.shift()
         if (nextEntry) {
+            
             try {
+                let driver : selenium.WebDriver
                 switch (nextEntry.type) {
                     case EntryType.FACEBOOK_ADD:
-                        addAdAccounts(nextEntry as FacebookQueueEntry)
+                        driver = await getFacebookDriver((nextEntry as FacebookQueueEntry).credentials)
+                        addAdAccounts(nextEntry as FacebookQueueEntry, driver)
                         break;
                     case EntryType.FACEBOOK_REMOVE:
-                        removeAdAccounts(nextEntry as FacebookQueueEntry)
+                        driver = await getFacebookDriver((nextEntry as FacebookQueueEntry).credentials) 
+                        removeAdAccounts(nextEntry as FacebookQueueEntry, driver)
                         break;
                     case EntryType.FACEBOOK_CLEAR:
-                        clearAdAccounts(nextEntry as FacebookQueueEntry)
+                        driver = await getFacebookDriver((nextEntry as FacebookQueueEntry).credentials)
+                        clearAdAccounts(nextEntry as FacebookQueueEntry, driver)
                         break;
                 }
             } catch (e) {
@@ -131,10 +136,8 @@ function checkQueue() {
     }
 }
 
-export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0) {
+export async function addAdAccounts(entry: FacebookQueueEntry, driver: selenium.WebDriver, tries: number = 0) {
     processing = true
-
-    let driver = await getFacebookDriver(entry.credentials)
 
     try {
         await driver.get(`https://developers.facebook.com/apps/${entry.app.facebookId}/settings/advanced/`)
@@ -197,7 +200,7 @@ export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0
             processing = false
             entry.callback(null)
         } else {
-            addAdAccounts(entry, tries + 1)
+            addAdAccounts(entry, driver, tries + 1)
         }
         return
     }
@@ -208,10 +211,8 @@ export async function addAdAccounts(entry: FacebookQueueEntry, tries: number = 0
     checkQueue()
 }
 
-export async function removeAdAccounts(entry: FacebookQueueEntry, tries: number = 0) {
+export async function removeAdAccounts(entry: FacebookQueueEntry, driver: selenium.WebDriver, tries: number = 0) {
     processing = true
-
-    let driver = await getFacebookDriver(entry.credentials)
 
     try {
         await driver.get(`https://developers.facebook.com/apps/${entry.app.facebookId}/settings/advanced/`)
@@ -248,7 +249,7 @@ export async function removeAdAccounts(entry: FacebookQueueEntry, tries: number 
             processing = false
             entry.callback(null)
         } else {
-            removeAdAccounts(entry, tries + 1)
+            removeAdAccounts(entry, driver, tries + 1)
         }
         return
     }
@@ -259,10 +260,8 @@ export async function removeAdAccounts(entry: FacebookQueueEntry, tries: number 
     checkQueue()
 }
 
-export async function clearAdAccounts(entry: FacebookQueueEntry, tries: number = 0) {
+export async function clearAdAccounts(entry: FacebookQueueEntry, driver: selenium.WebDriver, tries: number = 0) {
     processing = true
-
-    let driver = await getFacebookDriver(entry.credentials)
 
     try {
         await driver.get(`https://developers.facebook.com/apps/${entry.app.facebookId}/settings/advanced/`)
@@ -293,7 +292,7 @@ export async function clearAdAccounts(entry: FacebookQueueEntry, tries: number =
             processing = false
             entry.callback(null)
         } else {
-            clearAdAccounts(entry, tries + 1)
+            clearAdAccounts(entry, driver, tries + 1)
         }
         return
     }
