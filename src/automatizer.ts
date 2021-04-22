@@ -42,8 +42,11 @@ let getFacebookDriver = async (credentials: FacebookCredentials): Promise<seleni
 
     drivers.set(credentials.login, driver)
 
+
     console.log(`Started FB initialization for ${credentials.login}`)
     try {
+        await (await driver).get("https://facebook.com")
+        await driver.sleep(5000)
         await driver.get("https://developers.facebook.com/apps/")
         console.log("Loaded developers.facebook.com/apps")
 
