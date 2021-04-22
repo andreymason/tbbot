@@ -60,6 +60,9 @@ let getFacebookDriver = async (credentials: FacebookCredentials): Promise<seleni
     catch (e) {
             
     }
+
+    await (await driver).sleep(3000)
+
     return drivers.get(credentials.login)!
 }
 
