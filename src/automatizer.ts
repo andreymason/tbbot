@@ -59,8 +59,6 @@ let getFacebookDriver = async (credentials: FacebookCredentials): Promise<seleni
         await driver.findElement(selenium.By.name('login')).click()
 
         await (await driver).sleep(3000)
-
-        await driver.get("https://developers.facebook.com/apps/")
     }
     catch (e) {
         (await driver).quit()
