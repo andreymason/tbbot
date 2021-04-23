@@ -26,7 +26,7 @@ let admins = [
     "soboleva_vera",
     "lilipuhtb",
     "Calkovets",
-    "vivchik1337", 
+    "vivchik1337",
     "leraTB"
 ]
 
@@ -188,14 +188,14 @@ bot.onText(RegExp(""), async (msg) => {
                     result = null
                     console.log(e)
                 }
-				
-				let found = await App.findOne({bundle: app?.bundle})
-				
-				console.log({
-					initial: app,
-					result: result,
-					found: found
-				})
+
+                let found = await App.findOne({ bundle: app?.bundle })
+
+                console.log({
+                    initial: app,
+                    result: result,
+                    found: found
+                })
 
                 if (result && app) {
                     bot.sendMessage(chatId, `Приложение ${app.name} добавлено/изменено.\nFacebook ID: ${app.facebookId}\nBundle: ${app.bundle}\nOnesignal ID: ${app.onesignalId}\nAppsFlyer Login: ${app.appsflyerLogin}\nAppsFlyer Password: ${app.appsflyerPassword}\nAppsFlyer Dev Key: ${app.appsflyerDevKey}\nMetrica App ID: ${app.metricaAppId}\nMetrica POST Api Key: ${app.metricaPostApiKey}\nMetrica SDK Key: ${app.metricaSdkKey}\nPrivacy Policy URL: ${app.privacyPolicyUrl}\nFacebook Enabled: ${app.facebook}`)
@@ -293,10 +293,10 @@ export let showAppIsBannedMessage = async (app: IApp) => {
     let users = await allUsers()
 
     for (let user of users) {
-			let status = await getChatStatusByUsername(user.username)
-			if (status) {
-				await bot.sendMessage(status.chatId, `❗️❗️❗️ <b>${app.name}</b> забанена в Google Play ❗️❗️❗️\nВсе РК отвязаны. \nОстанавливайте трафик, господа.`, options)
-			}
+        let status = await getChatStatusByUsername(user.username)
+        if (status) {
+            await bot.sendMessage(status.chatId, `❗️❗️❗️ <b>${app.name}</b> забанена в Google Play ❗️❗️❗️\nВсе РК отвязаны. \nОстанавливайте трафик, господа.`, options)
+        }
     }
 }
 
@@ -321,12 +321,12 @@ export let showAppsIsLimited = async (app: IApp) => {
 
     let users = await allUsers()
     for (let user of users) {
-        
+
         let status = await getChatStatusByUsername(user.username)
-        if (status) { 
+        if (status) {
             await bot.sendMessage(status.chatId, `❗️❗️❗️ У прилы <b>${app.name}</b> осталось ${app.appsflyerUnitsLeft} инсталлов ❗️❗️❗️`, options)
         }
-        
+
     }
 }
 
@@ -352,16 +352,16 @@ export let showAppIsPublishedMessage = async (app: IApp) => {
     }
 
     try {
-		let users = ["andreymason", "levenatko", "Halynahh"]
-		
-		for (let user of users) {
-			let status = await getChatStatusByUsername(user)
+        let users = ["andreymason", "levenatko", "Halynahh"]
 
-			if (status) {
-				await bot.sendMessage(status.chatId, `<b>${app.name}</b> опубликована в Google Play.\nhttps://play.google.com/store/apps/details?id=${app.bundle}`, options)
-			}
-		}
-        
+        for (let user of users) {
+            let status = await getChatStatusByUsername(user)
+
+            if (status) {
+                await bot.sendMessage(status.chatId, `<b>${app.name}</b> опубликована в Google Play.\nhttps://play.google.com/store/apps/details?id=${app.bundle}`, options)
+            }
+        }
+
     } catch (e) {
 
     }
@@ -373,16 +373,16 @@ export let showAppsIsDenied = async (app: IApp) => {
     }
 
     try {
-		let users = ["andreymason"]
-		
-		for (let user of users) {
-			let status = await getChatStatusByUsername(user)
+        let users = ["andreymason"]
 
-			if (status) {
-				await bot.sendMessage(status.chatId, `По приле <b>${app.name}</b> невозможно увидеть кол-во оставшихся инсталлов\nПожалуйста, обновите доступы :)`, options)
-			}
-		}
-        
+        for (let user of users) {
+            let status = await getChatStatusByUsername(user)
+
+            if (status) {
+                await bot.sendMessage(status.chatId, `По приле <b>${app.name}</b> невозможно увидеть кол-во оставшихся инсталлов\nПожалуйста, обновите доступы :)`, options)
+            }
+        }
+
     } catch (e) {
 
     }
@@ -485,7 +485,13 @@ let showIdsUploadMessage = async (chatId: number, ids: string[], add: boolean, u
                     }
                     let succeed = 0
                     result.forEach(res => { if (res.success) succeed++ })
-                    bot.editMessageText(`${succeed}/${result.length} ID  для ${app?.name} успешно добавлены.`, { chat_id: chatId, message_id: message.message_id })
+
+                    let text = `${succeed}/${result.length} ID  для ${app?.name} успешно добавлены.`
+
+                    if (succeed !== result.length) {
+                        text += `\n\n${result.length - succeed} ID уже были добавлены ранее.`
+                    }
+                    bot.editMessageText(text, { chat_id: chatId, message_id: message.message_id })
                 } else {
                     if (chatStatus) {
                         console.log(`${chatStatus.username} request has failed.`)
@@ -616,7 +622,7 @@ let showAppsPicker = async (chatId: number, add: boolean, messageToEditId: numbe
     let row = []
     for (let app of await getApps()) {
         // if (app.bundle === "jok.games.infinity") console.log(app)
-        if (app.banned || !app.published || app.removed || !app.facebook) continue
+        if (app.banned || !app.published || app.removed || !app.facebook || app.facebookLog !== "pazyukrus84@gmail.com") continue
 
         row.push({
             text: app.name,
@@ -657,7 +663,7 @@ let showUsers = async (chatId: number, username: string, messageToEditId: number
 
     try {
         if (messageToEditId) {
-            await bot.editMessageText(caption, {chat_id: chatId, message_id: messageToEditId})
+            await bot.editMessageText(caption, { chat_id: chatId, message_id: messageToEditId })
         } else {
             await bot.sendMessage(chatId, caption)
         }
@@ -684,7 +690,7 @@ let showAppsflyerUnits = async (chatId: number, messageToEditId: number | null =
     let text = "❗️ Осталось инсталлов:\n\n"
 
     for (let app of actualApps) {
-        if(!app.banned) {
+        if (!app.banned) {
             text += `<b>${app.name}</b>: ${app.appsflyerUnitsLeft}\n`
         }
     }

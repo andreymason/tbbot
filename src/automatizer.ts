@@ -48,7 +48,6 @@ let getFacebookDriver = async (credentials: FacebookCredentials): Promise<seleni
     console.log(`Started FB initialization for ${credentials.login}`)
     try {
         await (await driver).get("https://facebook.com")
-        console.log("Loaded developers.facebook.com/apps")
 
         await driver.wait(() => {
             return selenium.until.elementLocated(selenium.By.xpath(`//button[@data-cookiebanner='accept_button']`))
@@ -184,7 +183,6 @@ export async function addAdAccounts(entry: FacebookQueueEntry, driver: selenium.
                 try {
                     await parentDiv.findElement(selenium.By.xpath(`//span[@title='${accountId}']`))
                     result.push({ id: accountId, success: false })
-                    console.log(`Already present: ${accountId}`)
                     continue
                 } catch (e) {
 
@@ -208,13 +206,13 @@ export async function addAdAccounts(entry: FacebookQueueEntry, driver: selenium.
 
         await (await driver.findElement(selenium.By.name(`save_changes`))).click()
     } catch (e) {
-        console.log(e)
-        if (tries >= MAX_TRIES) {
-            processing = false
-            entry.callback(null)
-        } else {
-            await addAdAccounts(entry, driver, tries + 1)
-        }
+        // console.log(e)
+        // if (tries >= MAX_TRIES) {
+        processing = false
+        entry.callback(null)
+        // } else {
+        // await addAdAccounts(entry, driver, tries + 1)
+        // }
         return
     }
 
@@ -258,12 +256,12 @@ export async function removeAdAccounts(entry: FacebookQueueEntry, driver: seleni
         await (await driver.findElement(selenium.By.name(`save_changes`))).click()
 
     } catch (e) {
-        if (tries >= MAX_TRIES) {
+        // if (tries >= MAX_TRIES) {
             processing = false
             entry.callback(null)
-        } else {
-            await removeAdAccounts(entry, driver, tries + 1)
-        }
+        // } else {
+            // await removeAdAccounts(entry, driver, tries + 1)
+        // }
         return
     }
 
