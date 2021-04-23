@@ -160,6 +160,7 @@ export async function addAdAccounts(entry: FacebookQueueEntry, driver: selenium.
         entry.callback(null)
         console.log("Can't open advanced settings.")
         await checkQueue()
+        return
     }
 
     let parentDiv = null
@@ -172,6 +173,7 @@ export async function addAdAccounts(entry: FacebookQueueEntry, driver: selenium.
         entry.callback(null)
         console.log("Can't find input.")
         await checkQueue()
+        return
     }
 
     let result: FacebookResult[] = []
@@ -233,6 +235,7 @@ export async function removeAdAccounts(entry: FacebookQueueEntry, driver: seleni
         entry.callback(null)
         console.log("Can't open advanced settings.")
         await checkQueue()
+        return
     }
 
     let result: FacebookResult[] = []
