@@ -306,13 +306,13 @@ export let showAppsIsZero = async (app: IApp) => {
         parse_mode: "HTML"
     }
 
-    let users = await allUsers()
-    for (let user of users) {
-        let status = await getChatStatusByUsername(user.username)
-        if (status) {
-            await bot.sendMessage(status.chatId, `❗️❗️❗️ У прилы <b>${app.name}</b> закончились инсталлы ❗️❗️❗️`, options)
-        }
-    }
+    // let users = await allUsers()
+    // for (let user of users) {
+    //     let status = await getChatStatusByUsername(user.username)
+    //     if (status) {
+    //         await bot.sendMessage(status.chatId, `❗️❗️❗️ У прилы <b>${app.name}</b> закончились инсталлы ❗️❗️❗️`, options)
+    //     }
+    // }
 }
 
 export let showAppsIsLimited = async (app: IApp) => {
@@ -320,15 +320,15 @@ export let showAppsIsLimited = async (app: IApp) => {
         parse_mode: "HTML"
     }
 
-    let users = await allUsers()
-    for (let user of users) {
+    // let users = await allUsers()
+    // for (let user of users) {
 
-        let status = await getChatStatusByUsername(user.username)
-        if (status) {
-            await bot.sendMessage(status.chatId, `❗️❗️❗️ У прилы <b>${app.name}</b> осталось ${app.appsflyerUnitsLeft} инсталлов ❗️❗️❗️`, options)
-        }
+    //     let status = await getChatStatusByUsername(user.username)
+    //     if (status) {
+    //         await bot.sendMessage(status.chatId, `❗️❗️❗️ У прилы <b>${app.name}</b> осталось ${app.appsflyerUnitsLeft} инсталлов ❗️❗️❗️`, options)
+    //     }
 
-    }
+    // }
 }
 
 export let showAppsflyerIsBroken = async (app: IApp) => {
@@ -339,9 +339,9 @@ export let showAppsflyerIsBroken = async (app: IApp) => {
     try {
         let status = await getChatStatusByUsername("andreymason")
 
-        if (status) {
-            await bot.sendMessage(status.chatId, `<b>${app.name}</b> поломана.\n${app.appsflyerLogin}\n${app.appsflyerPassword}`, options)
-        }
+        // if (status) {
+        //     await bot.sendMessage(status.chatId, `<b>${app.name}</b> поломана.\n${app.appsflyerLogin}\n${app.appsflyerPassword}`, options)
+        // }
     } catch (e) {
 
     }
