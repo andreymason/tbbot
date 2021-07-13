@@ -354,7 +354,7 @@ export let showAppIsPublishedMessage = async (app: IApp) => {
     }
 
     try {
-        let users = ["andreymason", "levenatko", "Halynahh", "calkovets"]
+        let users = ["andreymason", "levenatko", "Halynahh", "calkovets", "alextvolk"]
 
         for (let user of users) {
             let status = await getChatStatusByUsername(user)
