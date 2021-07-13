@@ -28,7 +28,8 @@ let admins = [
     "Calkovets",
     "vivchik1337",
     "leraTB",
-    "bprtsk"
+    "bprtsk",
+    "calkovets"
 ]
 
 connect(MONGO, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }, function (error) {
